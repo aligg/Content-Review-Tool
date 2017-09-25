@@ -1,3 +1,5 @@
+
+
 import praw
 
 def auth():
@@ -39,8 +41,7 @@ def grab_comments():
                                                 "num_reports" : comment.num_reports
             }
             if not comment.is_root:
-                comments[comment.link_id].update({"comment_parent" : comment.parent().body})
-    print comments                 
+                comments[comment.link_id].update({"comment_parent" : comment.parent().body})               
     return comments                
     
 
