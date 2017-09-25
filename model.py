@@ -78,12 +78,12 @@ def connect_to_db(app):
     """Connect the database to app"""
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'pstgresql:///crt'
-    app.config['SQL_ALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQL_ALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
 
 
-if __name__ = "__main__":
+if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
