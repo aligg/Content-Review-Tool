@@ -3,8 +3,22 @@
 {% block content %}
 
 ^..^
+{% for link_id, info in comments.items() %}
+<
+{{ link_id }} 
+{{ info.permalink }} 
+{{ info.body }} 
+{{ info.author }}
+{{ info.parent}}
+{{ info.subreddit }}
+{{ info.submission }}
+{{ info.upvotes}}
+{{ info.downvotes }}
+{{ info.num_reports }}
+{{ info.controversiality }}
 
-{{comments}}
+
+{% endfor %}
 
 
 
