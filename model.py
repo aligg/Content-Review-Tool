@@ -25,10 +25,11 @@ class Item(db.Model):
     controversiality = db.Column(db.Integer, nullable=True)
     upvotes = db.Column(db.Integer, nullable=True)
     downvotes = db.Column(db.Integer, nullable=True)
-    #total reviews -> default is 1 assuming add to db upon submit
-    #agreement rate
-    #last action -> timestamp
-    #platform
+    
+    def __repr__(self):
+        """Prettify printed output"""
+
+        return "<Item item_id=%s link_id=%s>" % (self.item_id, self.link_id)
 
 
 class Reviewer(db.Model):
@@ -40,6 +41,11 @@ class Reviewer(db.Model):
     email = db.Column(db.String(30), nullable=False)
     handle = db.Column(db.String(20), nullable=False)
     is_manager = db.Column(db.Boolean, nullable=False, default=False)
+
+    def __repr__(self):
+        """Prettify printed output"""
+
+        return "<Reviewer reviewer_id=%s handle=%s>" % (self.reviewer_id, self.handle)
 
 
 
@@ -55,6 +61,16 @@ class Action(db.Model):
     label_code = db.Column(db.String(5), nullable=False)
     label_applied = db.Column(db.String(30), nullable=False)
 
+    #Define relationships to other tables
+    reviewer = db.relationship("Reviewer", backref=db.backref("actions", order_by=time_created desc)) 
+    item = db.relationship("Item", backref=db.backref("actions", order_by=time_created desc))
+    #not sure if you can do desc like that
+
+    def __repr__(self):
+        """Prettify printed output"""
+
+        return "<Action action_id=%s label_code=%s item_id=%s reviewer_id=%s" % (self.action_id, self.label_code, 
+                                                                                self.item_id, self.reviewer_id)
 
 
 ##############################################################################
