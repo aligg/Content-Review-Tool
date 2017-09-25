@@ -2,9 +2,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
-
 db = SQLAlchemy()
-
 
 ##############################################################################
 #Model definitions
@@ -62,9 +60,9 @@ class Action(db.Model):
     label_applied = db.Column(db.String(30), nullable=False)
 
     #Define relationships to other tables
-    reviewer = db.relationship("Reviewer", backref=db.backref("actions", order_by=time_created desc)) 
-    item = db.relationship("Item", backref=db.backref("actions", order_by=time_created desc))
-    #not sure if you can do desc like that
+    reviewer = db.relationship("Reviewer", backref=db.backref("actions", order_by=time_created)) #curious if you can add in desc here & line below 
+    item = db.relationship("Item", backref=db.backref("actions", order_by=time_created))
+    
 
     def __repr__(self):
         """Prettify printed output"""
@@ -79,7 +77,7 @@ class Action(db.Model):
 def connect_to_db(app):
     """Connect the database to app"""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'pstgresql:///tofillin'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'pstgresql:///crt'
     app.config['SQL_ALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
