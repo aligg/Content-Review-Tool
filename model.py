@@ -13,9 +13,9 @@ class Item(db.Model):
     __tablename__ = "items"
 
     item_id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
-    link_id = db.Column(db.String(15), nullable=True)
+    link_id = db.Column(db.String(30), nullable=True)
     body = db.Column(db.String(40000), nullable=False)
-    author = db.Column(db.String(15), nullable=True)
+    author = db.Column(db.String(30), nullable=True)
     submission = db.Column(db.String(200), nullable=True)
     subreddit = db.Column(db.String(200), nullable=True)
     permalink = db.Column(db.String(200), nullable=False)
@@ -38,6 +38,7 @@ class Reviewer(db.Model):
     reviewer_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(30), nullable=False)
     handle = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(20), nullable=False)
     is_manager = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1> Add a new reviewer </h1>
+
+<form action="/reg-handler", method="post"> 
+Email address: <input type="text" name="email" required><br>
+Display name: <input type="text" name="handle" required><br>
+Password: <input type="password" name="password" required><br>
+Is Manager? <select name="is_manager">
+            <option value="True">True</option>
+            <option selected="selected" value="False">False</option>
+            </select><br>
+            <input type=submit value="Submit">
+</form>
+
+{% endblock %}
