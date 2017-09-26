@@ -2,13 +2,13 @@
 
 {% block content %}
 
-
-{% for link_id, info in comments.items() %}
-
-<b>Comment ID:</b> {{ link_id }} <a href="https://www.reddit.com/{{ info.permalink }}" target="_blank">View on Reddit</a>
+{% for comment in comments %}
+<div id="reviewobject-{{loop.index}}">
+Review Item {{loop.index}}<br>
+<b>Comment ID:</b>{{comment.link_id}} <a href="https://www.reddit.com/{{ comment.permalink }}" target="_blank">View on Reddit</a>
 
 <h1> Comment for Review: </h1>
-<p>{{ info.body }} </p><br><br>
+<p>{{ comment.body }} </p><br><br>
 
 <b>Context</b>
 <table style="width:40%">
@@ -19,9 +19,9 @@
 
 </tr>
 <tr>
-    <td>{{ info.submission }}</td>
-    <td>{{ info.subreddit }}</td>
-    <td>{{ info.author }}</td>  
+    <td>{{ comment.submission }}</td>
+    <td>{{ comment.subreddit }}</td>
+    <td>{{ comment.author }}</td>  
 </tr>
 </table>
 <br><br>
@@ -31,26 +31,51 @@
     <th>Upvotes</th>
     <th>Downvotes</th>
     <th>Controversy</th>
-    <th>Reports</th>
 </tr>
 <tr>
-    <td>{{ info.upvotes}}</td>
-    <td>{{ info.downvotes }}</td>
-    <td>{{ info.controversiality }}</td>
-    <td>{{ info.num_reports }}</td>
+    <td>{{ comment.upvotes}}</td>
+    <td>{{ comment.downvotes }}</td>
+    <td>{{ comment.controversiality }}</td>
 </tr>
 </table>
 <br><br>
 
-{% endfor %}
 <form action="/submit" method=post>
     <input type="hidden" name="data" value={{comments}}>
     <input type="radio" name="label" value="brand_safe" checked>Brand Safe<br>
     <input type="radio" name="label" value="not_brand_safe">Not Brand Safe<br>
     Notes<input type="text" name="notes"><br>
-    <input type="submit" value="Submit">
+    <input type="button" name="next" value="next" id="next">
+    <br><br>
+
+</div>
+{% endfor %}
+    <input type="submit" value="Submit" id="submit">
 </form>
+<script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
 
+var currentReview = 1
 
+//hide review objects 2-5
+for (var i = 2; i<=5; i++){ 
+    $('#reviewobject-'+i).hide();
+}
+//hide submit button until reviewobject 5
+for (var i =1; i <=4; i++){
+    $('#submit').hide()
+}
+//iterate through objects and hide previous display next one
+function displayNextReview() {
+    if (currentReview < 5)
+    {
+        $('#reviewobject-'+currentReview).hide();
+        currentReview++;  
+        $('#reviewobject-'+currentReview).show();
+    }
+}
+//call function on next button click
+$('#next').on('click', displayNextReview);
 
+</script>
 {% endblock %}

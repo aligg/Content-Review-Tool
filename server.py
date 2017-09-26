@@ -24,10 +24,10 @@ def index():
 def queue():
     """Opens the queue and retrieves items for review"""
 
-    #comments = grab_comments(auth())
+    comments = Item.query.limit(5).all()
 
-    return render_template("queue.html", #comments=comments)
-        )
+    return render_template("queue.html", comments=comments)
+
 
 @app.route('/submit')
 def submit():
