@@ -43,7 +43,7 @@
 <br><br>
 
 {% endfor %}
-<form action="/" method=post>
+<form action="/submit" method=post>
     <input type="hidden" name="data" value={{comments}}>
     <input type="radio" name="label" value="brand_safe" checked>Brand Safe<br>
     <input type="radio" name="label" value="not_brand_safe">Not Brand Safe<br>

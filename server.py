@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import (Flask, jsonify, render_template, redirect, request, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
 from model import(connect_to_db, db, Item, Reviewer, Action)
-from seed import grab_comments
+from seed import grab_comments, auth
 
 
 app = Flask(__name__)
@@ -24,12 +24,21 @@ def index():
 def queue():
     """Opens the queue and retrieves items for review"""
 
-    comments = grab_comments()
-    print "THESE ARE DA COMMENATS", comments
-
-
+    comments = grab_comments(auth())
 
     return render_template("queue.html", comments=comments)
+
+@app.route('/submit')
+def submit():
+    """Handled submissions from queue and redirects to next page"""
+
+    #this route should: 
+    #add comment submitted into db with label
+    #redirect user to new batch or home for now
+
+
+    return redirect('/')
+
 
 
 if __name__ == "__main__":
