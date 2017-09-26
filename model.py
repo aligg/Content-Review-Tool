@@ -16,13 +16,13 @@ class Item(db.Model):
     link_id = db.Column(db.String(15), nullable=True)
     body = db.Column(db.String(40000), nullable=False)
     author = db.Column(db.String(15), nullable=True)
-    parent = db.Column(db.String(40000), nullable=True)
-    submission = db.Column(db.String(100), nullable=True)
-    subreddit = db.Column(db.String(100), nullable=True)
-    permalink = db.Column(db.String(100), nullable=False)
+    submission = db.Column(db.String(200), nullable=True)
+    subreddit = db.Column(db.String(200), nullable=True)
+    permalink = db.Column(db.String(200), nullable=False)
     controversiality = db.Column(db.Integer, nullable=True)
     upvotes = db.Column(db.Integer, nullable=True)
     downvotes = db.Column(db.Integer, nullable=True)
+    parent = db.Column(db.String(40000), nullable=True)
     
     def __repr__(self):
         """Prettify printed output"""
@@ -77,7 +77,7 @@ class Action(db.Model):
 def connect_to_db(app):
     """Connect the database to app"""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'pstgresql:///crt'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///crt'
     app.config['SQL_ALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
@@ -87,6 +87,8 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
+    db.drop_all()
+    db.create_all()
     print "Connected to DB, Woohoo!"
 
 

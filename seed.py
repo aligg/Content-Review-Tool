@@ -2,6 +2,12 @@
 import os
 import praw
 
+from sqlalchemy import func
+from model import (Action, Reviewer, Item, connect_to_db, db)
+from server import app
+import datetime
+
+
 def auth():
     """authorize using praw"""
 
@@ -28,6 +34,7 @@ def grab_comments(reddit):
 
    
     s = grab_submissions(reddit)
+
     comments = {}
     count = 0
    
@@ -37,8 +44,8 @@ def grab_comments(reddit):
         for comment_num in range(0, num_comments): 
             comment = submission.comments[comment_num]
             comments[comment.link_id] = { "body" : comment.body,
-                                                "author" : comment.author,
-                                                "subreddit" : comment.subreddit,
+                                                "author" : comment.author.name,
+                                                "subreddit" : comment.subreddit.display_name,
                                                 "permalink" : comment.permalink(),
                                                 "controversiality" : comment.controversiality,
                                                 "submission" : submission.title,
@@ -50,12 +57,47 @@ def grab_comments(reddit):
             if not comment.is_root:
                 comments[comment.link_id].update({"parent" : comment.parent().body}) 
             # count += 1           
-    # print comments
-    return comments                
+    return comments
+
+
+def load_items():
+    """Populate items table with data from Reddit API"""
+
+
+    for link_id, values in grab_comments(reddit).items(): 
+        parent = values.get('parent', None)
+        item = Item(
+            link_id = link_id,
+            body = values['body'],
+            author = values['author'],
+            submission = values['submission'],
+            subreddit = values['subreddit'],
+            permalink = values['permalink'],
+            controversiality = values['controversiality'],
+            upvotes = values['upvotes'],
+            downvotes = values['downvotes'],
+            parent = parent)
+        print link_id, values['body']
+        db.session.add(item)
+
+    db.session.commit()
     
-
-
 
 reddit = auth()
 grab_comments(reddit)
+
+
+
+
+if __name__ == "__main__":
+
+    connect_to_db(app)
+
+    db.create_all()
+
+    load_items()
+
+
+    
+ 
 
