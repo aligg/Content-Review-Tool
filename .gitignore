@@ -1,4 +1,4 @@
 env/
 *.pyc
 secret.sh
-seed.py
+.DS_Store
