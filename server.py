@@ -28,12 +28,8 @@ def queue():
     """Opens the queue and retrieves items for review"""
     
     item_id_list = [a.item_id for a in Action.query.all()]
-    print item_id_list
-
-    #if item_id not already in actions table >4 times
-    #if item_id not already in actions table with current reviewer in session
-    #comments = Item.query.limit(5).all()
-    # db.not_(Employee.state.in_(['CA', 'OR'])) 
+    
+    #why is this not working?
     comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list))).limit(5).all()
 
     return render_template("queue.html", comments=comments)

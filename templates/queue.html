@@ -51,7 +51,7 @@ Review Item {{loop.index}}<br>
         <input type="hidden" name="item_id-{{loop.index}}" value={{comment.item_id}}>
         <input type="radio" name="label-{{loop.index}}" value="brand_safe" checked>Brand Safe<br>
         <input type="radio" name="label-{{loop.index}}" value="not_brand_safe">Not Brand Safe<br>
-        Notes<input type="text" name="notes-{{loop.index}}"><br>
+        Notes<input type="text" name="notes-{{loop.index}}" class="notes"><br>
     </div>
     {% endfor %}
     <br><br>
@@ -95,6 +95,14 @@ function displayNextReview() {
 }
 //call function on next button click
 $('.next').on('click', displayNextReview);
+
+
+$(document).keypress(function(e) {
+    if(e.which == 103) { 
+        $('.next').trigger('click');
+    }
+});
+
 
 </script>
 {% endblock %}
