@@ -16,7 +16,7 @@ class Item(db.Model):
     link_id = db.Column(db.String(30), nullable=True)
     body = db.Column(db.String(40000), nullable=False)
     author = db.Column(db.String(30), nullable=True)
-    submission = db.Column(db.String(200), nullable=True)
+    submission = db.Column(db.String(300), nullable=True)
     subreddit = db.Column(db.String(200), nullable=True)
     permalink = db.Column(db.String(200), nullable=False)
     controversiality = db.Column(db.Integer, nullable=True)
@@ -57,8 +57,8 @@ class Action(db.Model):
     item_id = db.Column(db.ForeignKey('items.item_id'))
     reviewer_id = db.Column(db.ForeignKey('reviewers.reviewer_id'))
     time_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow()) #not sure about this
-    label_code = db.Column(db.String(5), nullable=False)
     label_applied = db.Column(db.String(30), nullable=False)
+    notes = db.Column(db.String(100), nullable=True)
 
     #Define relationships to other tables
     reviewer = db.relationship("Reviewer", backref=db.backref("actions", order_by=time_created)) #curious if you can add in desc here & line below 
@@ -68,7 +68,7 @@ class Action(db.Model):
     def __repr__(self):
         """Prettify printed output"""
 
-        return "<Action action_id=%s label_code=%s item_id=%s reviewer_id=%s" % (self.action_id, self.label_code, 
+        return "<Action action_id=%s label_applied=%s item_id=%s reviewer_id=%s" % (self.action_id, self.label_applied, 
                                                                                 self.item_id, self.reviewer_id)
 
 
@@ -89,7 +89,6 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
-    db.drop_all()
     db.create_all()
     print "Connected to DB, Woohoo!"
 

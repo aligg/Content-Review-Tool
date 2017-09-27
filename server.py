@@ -5,6 +5,7 @@ from flask import (Flask, jsonify, render_template, redirect, request, flash, se
 from flask_debugtoolbar import DebugToolbarExtension
 from model import(connect_to_db, db, Item, Reviewer, Action)
 #from seed import grab_comments, auth
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -25,8 +26,15 @@ def index():
 @app.route('/queue')
 def queue():
     """Opens the queue and retrieves items for review"""
+    
+    item_id_list = [a.item_id for a in Action.query.all()]
+    print item_id_list
 
-    comments = Item.query.limit(5).all()
+    #if item_id not already in actions table >4 times
+    #if item_id not already in actions table with current reviewer in session
+    #comments = Item.query.limit(5).all()
+    # db.not_(Employee.state.in_(['CA', 'OR'])) 
+    comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list))).limit(5).all()
 
     return render_template("queue.html", comments=comments)
 
@@ -40,7 +48,16 @@ def submit():
         labels = request.form.get("label-"+str(i))
         notes = request.form.get("notes-"+str(i))
         reviewer = request.form.get("reviewer_id")
-        print item, labels, reviewer, notes, "PRINTED HERE YO YO YO"
+        time_created = datetime.utcnow()
+
+        new_action = Action(item_id=item,
+                            reviewer_id=reviewer,
+                            time_created=time_created,
+                            label_applied=labels,
+                            notes=notes)
+        db.session.add(new_action)
+
+    db.session.commit()
 
 
     return redirect('/')
