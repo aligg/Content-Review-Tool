@@ -2,8 +2,21 @@
 <html>
 <head>
     <title>CRT</title>
+    <link rel="stylesheet" type="text/css" href="/static/nav.css">
 </head>
 <body>
+<div class="nav">
+    <ul>
+    {% if "reviewer id" in session %}
+        <li><b>{{ session['handle'] }}</b></li>
+        <li><a href="/logout">Logout</a></li>
+    {% endif %}
+    {%if "reviewer id" not in session %}
+        <li><a href="/login">Log in</a></li>
+    {% endif %}
+    </ul>
+</div>
+<br>
     
     {% for message in get_flashed_messages() %}
     {{message}}
@@ -16,3 +29,6 @@
 
 </body>
 </html>
+
+
+

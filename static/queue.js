@@ -7,13 +7,18 @@ for (var i = 2; i<=5; i++){
     $('#reviewobject-'+i).hide();
     $('#formobject-'+i).hide();
 }
-//hide submit button until reviewobject 5
+
+
+//hide submit button until reviewobject 5,
     $('#submit').hide()
+   
+
 
 //iterate through objects and hide previous display next one
 function displayNextReview() {
     if (currentReview < 5)
     {
+
         $('#reviewobject-'+currentReview).hide();
         $('#formobject-'+currentReview).hide();
         currentReview++;  
@@ -29,13 +34,31 @@ function displayNextReview() {
     }
 
 }
-//call function on next button click
+function displayPriorReview() {
+    if (currentReview > 1)  
+    {   
+        $('.back').show()
+        $('#reviewobject-'+currentReview).hide();
+        $('#formobject-'+currentReview).hide();
+        currentReview--;
+        $('#reviewobject-'+currentReview).show();
+        $('#formobject-'+currentReview).show();
+        $('.back').show()
+    }
+    
+}
+
 $('.next').on('click', displayNextReview);
+$('.back').on('click', displayPriorReview);
 
 
 $(document).keypress(function(e) {
-    if(e.which == 103) { 
+    if($(".notes").is(":focus")) return;
+    {
+        if(e.which == 103) 
+        { 
         $('.next').trigger('click');
+        }
     }
 });
 

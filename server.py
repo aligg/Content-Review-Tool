@@ -111,6 +111,7 @@ def login_handler():
     if reviewer: 
         if reviewer.password == password:
             session["reviewer id"] = reviewer.reviewer_id
+            session["handle"] = reviewer.handle
             flash("You are logged in")
         else:
             flash("Incorrect credentials")
