@@ -1,11 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if "reviewer id" in session %}
+        <a href = "/logout">Logout</a>
+    {% endif %}
+    {%if "reviewer id" not in session %}
+            <a href = "/login">Log in</a>
+    {% endif %}
 
-Hello
 
-<p><a href="/queue">Jump in the queue</a></p><br>
-<p><a href="/add-reviewer">Add new reviewer</a></p>
+<br> The <b>C</b>ontent <b>R</b>eview <b>T</b>ool welcomes you.<br><br>
+
+<a href="/queue">Jump in the queue</a><br>
+<a href="/add-reviewer">Add new reviewer</a>
 
 {% endblock %}
 

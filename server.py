@@ -17,6 +17,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Landing Page / Queue Dashboard"""
+    print session
 
     return render_template("homepage.html")
 
@@ -30,16 +31,19 @@ def queue():
     return render_template("queue.html", comments=comments)
 
 
-@app.route('/submit')
+@app.route('/submit', methods=["POST"])
 def submit():
     """Handled submissions from queue and redirects to next page"""
 
-    #this route should: 
-    #add comment submitted into db with label
-    #redirect user to new batch or home for now
+    for i in range(1,6):
+        item = request.form.get("item_id-"+str(i))
+        labels = request.form.get("label-"+str(i))
+        notes = request.form.get("notes-"+str(i))
+        reviewer = request.form.get("reviewer_id")
+        print item, labels, reviewer, notes, "PRINTED HERE YO YO YO"
 
 
-    return redirect('/queue')
+    return redirect('/')
 
 
 @app.route('/add-reviewer')
@@ -75,6 +79,42 @@ def add_reviewer():
 
 
     return redirect('/')
+
+@app.route('/login')
+def login_form():
+    """Displays login form"""
+
+    return render_template("login_form.html")
+
+@app.route('/login-handler', methods=["POST"])
+def login_handler():
+    """Handles login form inputs, if valid credentials logs user in and redirects home"""
+
+    handle = request.form.get("handle")
+    password = request.form.get("password")
+
+    reviewer=Reviewer.query.filter_by(handle=handle).first()
+
+    if reviewer: 
+        if reviewer.password == password:
+            session["reviewer id"] = reviewer.reviewer_id
+            flash("You are logged in")
+        else:
+            flash("Incorrect credentials")
+            return redirect("/login")
+    else:
+        flash("Reviewer by that handle does not exist. Ask a manager to create your account.")
+        return redirect("/")
+
+    return redirect("/")
+
+@app.route('/logout')
+def logout():
+    """logs reviewer out & removes id from session"""
+
+    session.pop("reviewer id", None)
+    flash("You are now logged out")
+    return redirect("/")
 
 
 

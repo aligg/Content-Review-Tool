@@ -11,47 +11,56 @@ Review Item {{loop.index}}<br>
 <p>{{ comment.body }} </p><br><br>
 
 <b>Context</b>
-<table style="width:40%">
-<tr>
-    <th>Post</th>
-    <th>Subreddit</th>
-    <th>Comment Author</th>
+    <table style="width:40%">
+    <tr>
+        <th>Post</th>
+        <th>Subreddit</th>
+        <th>Comment Author</th>
 
-</tr>
-<tr>
-    <td>{{ comment.submission }}</td>
-    <td>{{ comment.subreddit }}</td>
-    <td>{{ comment.author }}</td>  
-</tr>
-</table>
-<br><br>
-<b>  Details </b>
-<table style="width:40%">
-<tr>
-    <th>Upvotes</th>
-    <th>Downvotes</th>
-    <th>Controversy</th>
-</tr>
-<tr>
-    <td>{{ comment.upvotes}}</td>
-    <td>{{ comment.downvotes }}</td>
-    <td>{{ comment.controversiality }}</td>
-</tr>
-</table>
-<br><br>
-
-<form action="/submit" method=post>
-    <input type="hidden" name="data" value={{comments}}>
-    <input type="radio" name="label" value="brand_safe" checked>Brand Safe<br>
-    <input type="radio" name="label" value="not_brand_safe">Not Brand Safe<br>
-    Notes<input type="text" name="notes"><br>
-    <input type="button" name="next" value="next" id="next">
+    </tr>
+    <tr>
+        <td>{{ comment.submission }}</td>
+        <td>{{ comment.subreddit }}</td>
+        <td>{{ comment.author }}</td>  
+    </tr>
+    </table>
     <br><br>
-
+    <b>  Details </b>
+    <table style="width:40%">
+    <tr>
+        <th>Upvotes</th>
+        <th>Downvotes</th>
+        <th>Controversy</th>
+    </tr>
+    <tr>
+        <td>{{ comment.upvotes}}</td>
+        <td>{{ comment.downvotes }}</td>
+        <td>{{ comment.controversiality }}</td>
+    </tr>
+    </table>
 </div>
 {% endfor %}
+
+<br><br>
+
+
+<form action="/submit" method="post">
+    <input type="hidden" name="reviewer_id" value={{ session['reviewer id'] }}> 
+    {% for comment in comments %}
+    <div id="formobject-{{loop.index}}">
+        <input type="hidden" name="item_id-{{loop.index}}" value={{comment.item_id}}>
+        <input type="radio" name="label-{{loop.index}}" value="brand_safe" checked>Brand Safe<br>
+        <input type="radio" name="label-{{loop.index}}" value="not_brand_safe">Not Brand Safe<br>
+        Notes<input type="text" name="notes-{{loop.index}}"><br>
+    </div>
+    {% endfor %}
+    <br><br>
+
+    <input type="button" name="next" value="next" class="next">
     <input type="submit" value="Submit" id="submit">
-</form>
+    </form>
+
+
 <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
 
@@ -60,22 +69,32 @@ var currentReview = 1
 //hide review objects 2-5
 for (var i = 2; i<=5; i++){ 
     $('#reviewobject-'+i).hide();
+    $('#formobject-'+i).hide();
 }
 //hide submit button until reviewobject 5
-for (var i =1; i <=4; i++){
     $('#submit').hide()
-}
+
 //iterate through objects and hide previous display next one
 function displayNextReview() {
     if (currentReview < 5)
     {
         $('#reviewobject-'+currentReview).hide();
+        $('#formobject-'+currentReview).hide();
         currentReview++;  
         $('#reviewobject-'+currentReview).show();
+        $('#formobject-'+currentReview).show();
+        $('.next').show();
+        $('#submit').hide();
+
     }
+    if (currentReview == 5) {
+        $('.next').hide();
+        $('#submit').show();
+    }
+
 }
 //call function on next button click
-$('#next').on('click', displayNextReview);
+$('.next').on('click', displayNextReview);
 
 </script>
 {% endblock %}

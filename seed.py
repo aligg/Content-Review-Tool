@@ -63,22 +63,24 @@ def grab_comments(reddit):
 def load_items():
     """Populate items table with data from Reddit API"""
 
+    link_id_list = [a.link_id for a in Item.query.all()]
 
     for link_id, values in grab_comments(reddit).items(): 
-        parent = values.get('parent', None)
-        item = Item(
-            link_id = link_id,
-            body = values['body'],
-            author = values['author'],
-            submission = values['submission'],
-            subreddit = values['subreddit'],
-            permalink = values['permalink'],
-            controversiality = values['controversiality'],
-            upvotes = values['upvotes'],
-            downvotes = values['downvotes'],
-            parent = parent)
-        print link_id, values['body']
-        db.session.add(item)
+        if link_id not in link_id_list:
+            parent = values.get('parent', None)
+            item = Item(
+                link_id = link_id,
+                body = values['body'],
+                author = values['author'],
+                submission = values['submission'],
+                subreddit = values['subreddit'],
+                permalink = values['permalink'],
+                controversiality = values['controversiality'],
+                upvotes = values['upvotes'],
+                downvotes = values['downvotes'],
+                parent = parent)
+            print link_id, values['body']
+            db.session.add(item)
 
     db.session.commit()
     
@@ -93,7 +95,7 @@ if __name__ == "__main__":
 
     connect_to_db(app)
 
-    db.create_all()
+    # db.create_all()
 
     load_items()
 
