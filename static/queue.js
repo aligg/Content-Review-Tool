@@ -10,7 +10,8 @@ for (var i = 2; i<=5; i++){
 
 
 //hide submit button until reviewobject 5,
-    $('#submit').hide()
+    $('#submit').hide();
+    $('.back').hide();
    
 
 
@@ -32,6 +33,7 @@ function displayNextReview() {
         $('.next').hide();
         $('#submit').show();
     }
+    $('.back').show()
 
 }
 function displayPriorReview() {
@@ -45,7 +47,9 @@ function displayPriorReview() {
         $('#formobject-'+currentReview).show();
         $('.back').show()
     }
-    
+    else {
+        $('.back').hide()
+    }
 }
 
 $('.next').on('click', displayNextReview);

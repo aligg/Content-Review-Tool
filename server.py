@@ -15,29 +15,36 @@ app.secret_key = "miau"
 app.jinja_env.undefined = StrictUndefined
 
 
-@app.route('/')
-def index():
-    """Landing Page / Queue Dashboard"""
-    print session
+@app.context_processor
+def create_counter():
+    """Created counter showing daily reviews for logged in user"""
 
-
-    #python meets sql lecture for sql wrapper
     sql = """
         select count(action_id)
         from actions
         where reviewer_id = :reviewer_id
-        and time_created like "%:time_created%";
+        and extract(day from time_created) = :today
+        ;
         """
-        
+   
     cursor = db.session.execute(sql,
-                                {'reviewer_id': session["reviewer id",
-                                    'time_created' : date.today().day ]})
+                                {'reviewer_id': session["reviewer id"],
+                                'today': date.today().day}
+                                )
     rev_count = cursor.fetchall()
-    print rev_count
-    print date.today().day
-    #result of this assignd to reviews today attribute
+    for i in rev_count:
+        rev_count = i[0]
+
+    return dict(rev_count=rev_count)
+
+
+@app.route('/')
+def index():
+    """Landing Page / Queue Dashboard"""
+
 
     return render_template("homepage.html")
+
 
 
 @app.route('/queue')
