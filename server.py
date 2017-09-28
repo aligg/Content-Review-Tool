@@ -5,7 +5,7 @@ from flask import (Flask, jsonify, render_template, redirect, request, flash, se
 from flask_debugtoolbar import DebugToolbarExtension
 from model import(connect_to_db, db, Item, Reviewer, Action)
 #from seed import grab_comments, auth
-from datetime import datetime
+from datetime import (datetime, date)
 
 
 app = Flask(__name__)
@@ -19,6 +19,23 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Landing Page / Queue Dashboard"""
     print session
+
+
+    #python meets sql lecture for sql wrapper
+    sql = """
+        select count(action_id)
+        from actions
+        where reviewer_id = :reviewer_id
+        and time_created like "%:time_created%";
+        """
+        
+    cursor = db.session.execute(sql,
+                                {'reviewer_id': session["reviewer id",
+                                    'time_created' : date.today().day ]})
+    rev_count = cursor.fetchall()
+    print rev_count
+    print date.today().day
+    #result of this assignd to reviews today attribute
 
     return render_template("homepage.html")
 

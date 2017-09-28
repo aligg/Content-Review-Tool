@@ -9,6 +9,7 @@
     <ul>
     {% if "reviewer id" in session %}
         <li><b>{{ session['handle'] }}</b></li>
+        <li>xx reviews today</li>
         <li><a href="/logout">Logout</a></li>
     {% endif %}
     {%if "reviewer id" not in session %}
