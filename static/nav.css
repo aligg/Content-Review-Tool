@@ -1,8 +1,9 @@
 
 body {
-    font-family: serif;
+    font-family: "Helvetica Neue";
 }
-
+nav {font-family: "Helvetica Neue";
+}
 ul {
     list-style-type: none;
     margin: 0;
@@ -15,7 +16,8 @@ ul {
     text-align: left;
     float: left;
     color:#404040;
-    text-decoration: none
+    text-decoration: none;
+    font-family:"Helvetica Neue";
 }
 
 .logbutton {
