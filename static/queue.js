@@ -59,10 +59,20 @@ $('.back').on('click', displayPriorReview);
 $(document).keypress(function(e) {
     if($(".notes").is(":focus")) return;
     {
-        if(e.which == 103) 
+        if(e.which == 103) //g
         { 
         $('.next').trigger('click');
         }
+        if(e.which == 112) //p
+        { 
+        $('.submit').trigger('click');
+        }
+        if(e.which == 99)  //c
+        { 
+        $('.back').trigger('click');
+        }
     }
 });
+
+
 

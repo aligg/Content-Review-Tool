@@ -4,9 +4,11 @@ from jinja2 import StrictUndefined
 from flask import (Flask, jsonify, render_template, redirect, request, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
 from model import(connect_to_db, db, Item, Reviewer, Action)
-#from seed import grab_comments, auth
 from datetime import (datetime, date)
+from passlib.context import CryptContext
 
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
+                                deprecated="auto")
 
 app = Flask(__name__)
 
@@ -18,6 +20,8 @@ app.jinja_env.undefined = StrictUndefined
 @app.context_processor
 def create_counter():
     """Created counter showing daily reviews for logged in user"""
+    if not session or not ("reviewer id" in session or "handle" in session):
+        return dict(rev_count=[])
 
     sql = """
         select count(action_id)
@@ -38,10 +42,13 @@ def create_counter():
     return dict(rev_count=rev_count)
 
 
+    #need to change time to local for this to work super smoothly, both in db & here
+
+
 @app.route('/')
 def index():
     """Landing Page / Queue Dashboard"""
-
+    print session
 
     return render_template("homepage.html")
 
@@ -80,7 +87,7 @@ def submit():
     db.session.commit()
 
 
-    return redirect('/')
+    return redirect('/queue')
 
 
 @app.route('/add-reviewer')
@@ -97,6 +104,7 @@ def add_reviewer():
     email = request.form.get("email")
     handle = request.form.get("handle")
     password = request.form.get("password")
+    password_hash = pwd_context.hash(password)
     is_manager = request.form.get("is_manager")
 
     reviewer_in_db = Reviewer.query.filter_by(email=email).all()
@@ -104,7 +112,7 @@ def add_reviewer():
     if reviewer_in_db == []:
         new_reviewer = Reviewer(email=email, 
                                 handle=handle,
-                                password=password,
+                                password=password_hash,
                                 is_manager=is_manager)
 
         db.session.add(new_reviewer)
@@ -133,13 +141,16 @@ def login_handler():
     reviewer=Reviewer.query.filter_by(handle=handle).first()
 
     if reviewer: 
-        if reviewer.password == password:
+        if pwd_context.verify(password, reviewer.password):
             session["reviewer id"] = reviewer.reviewer_id
             session["handle"] = reviewer.handle
             flash("You are logged in")
         else:
             flash("Incorrect credentials")
+            print password, "PASSWORDD RIGHT HEREE"
+            print reviewer.password, "revPASSWORDD RIGHT HEREE"
             return redirect("/login")
+         
     else:
         flash("Reviewer by that handle does not exist. Ask a manager to create your account.")
         return redirect("/")
@@ -151,6 +162,7 @@ def logout():
     """logs reviewer out & removes id from session"""
 
     session.pop("reviewer id", None)
+    session.pop("handle", None)
     flash("You are now logged out")
     return redirect("/")
 

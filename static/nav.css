@@ -1,4 +1,40 @@
+
+body {
+    font-family: serif;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+.navbutton {
+    text-align: left;
+    float: left;
+    color:#404040;
+    text-decoration: none
+}
+
+.logbutton {
+    float: right;
+    text-align: right;
+    color: #404040;
+}
+
 li {
     display: inline;
+    float: left;
 }
+
+li {
+    display: block;
+    color: #404040;
+    padding: 14px 16px;
+    text-decoration: none;
+    font: serif;
+}
+
 

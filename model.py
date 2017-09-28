@@ -38,7 +38,7 @@ class Reviewer(db.Model):
     reviewer_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(30), nullable=False)
     handle = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
     is_manager = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):

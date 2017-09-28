@@ -8,12 +8,12 @@
 <div class="nav">
     <ul>
     {% if "reviewer id" in session %}
-        <li><b>{{ session['handle'] }}</b></li>
-        <li>{{rev_count}} reviews today</li>
-        <li><a href="/logout">Logout</a></li>
+        <li><a class="navbutton" href="/"><b> {{ session['handle'] }}</b></a></li>
+        <li><a class="navbutton" href="/">{{rev_count }} reviews today</a></li>
+        <li><a class="logbutton" href="/logout">Logout</a></li>
     {% endif %}
     {%if "reviewer id" not in session %}
-        <li><a href="/login">Log in</a></li>
+        <li><a class="logbutton" href="/login">Log in</a></li>
     {% endif %}
     </ul>
 </div>
