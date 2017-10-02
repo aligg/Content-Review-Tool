@@ -22,7 +22,7 @@ def grab_submissions(reddit):
     """grabs submissions from reddit controversial front page and data associated with them"""
 
     submissions = {}   
-    for submission in reddit.subreddit('all').controversial('hour', limit=50):#reddit.front.controversial(limit=10):     
+    for submission in reddit.subreddit('all').top('hour', limit=50):#reddit.front.controversial(limit=10):     
         submission.comment_sort = "new"
         submissions[submission.id] = submission
        
@@ -103,13 +103,13 @@ def load_words():
 
 
 def set_val_user_id():
-    """Set value for the next word_id after seeding database"""
+    """Set value for the next word_id after seeding badwords table"""
 
-    # Get the Max user_id in the database
+    # Get the max word_id in the database
     result = db.session.query(func.max(BadWord.word_id)).one()
     max_id = int(result[0])
 
-    # Set the value for the next user_id to be max_id + 1
+    # Set the value for the next word_id to be max_id + 1
     query = "SELECT setval('badwords_word_id_seq', :new_id)"
     db.session.execute(query, {'new_id': max_id + 1})
     db.session.commit()

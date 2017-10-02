@@ -6,8 +6,11 @@
 <br> The <b>C</b>ontent <b>R</b>eview <b>T</b>ool welcomes you.<br><br>
 
 {% if "reviewer id" in session %}
-<a href="/queue">Jump in the queue</a><br>
-{% endif %}
+<a href="/queue">Comments Queue</a><br>
+<a href="/picker">Review by Subreddit</a>
+{% endif %}<br>
+
+<br>
 <a href="/add-reviewer">Add new reviewer</a>
 
 {% endblock %}

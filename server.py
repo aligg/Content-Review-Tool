@@ -82,6 +82,23 @@ def queue():
                             comments=comments,
                             matches=matches)
 
+@app.route('/picker')
+def display_picker():
+    """Displays form for reviewer to specify review parameters"""
+
+    return render_template("picker.html")
+
+
+@app.route('/picker-handler', methods=["POST"])
+def picker_handler():
+    """Handles input from picker form, queries reddit API, adds to items db, redirects to queue"""
+
+    subreddit = request.form.get("subreddit")
+    sortby = request.form.get("sort")
+    timeframe = request.form.get("time")
+
+    return render_template("/")
+
 
 @app.route('/submit', methods=["POST"])
 def submit():

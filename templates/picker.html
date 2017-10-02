@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form action="/picker-handler", method="POST">
+    Subreddit: <input type="text" name="subreddit" required><br>
+    Sort: <select>
+            <option name="sort" value="hot">Hot</option>
+            <option name="sort" value="new">New</option>
+            <option name="sort" value="rising">Rising</option>
+            <option name="sort" value="controversial">Controversial</option>
+            <option name="sort" value="top">Top</option>
+            <option name="sort" value="gilded">Gilded</option>
+        </select><br>
+    Time: <select>
+            <option name="time" value="hour">Hour</option>
+            <option name="time" value="day">Day</option>
+            <option name="time" value="week">Week</option>
+            <option name="time" value="month">Month</option>
+            <option name="time" value="year">Year</option>
+        </select><br>
+
+    <input type="submit" value="Go">
+</form>
+
+{% endblock %}
