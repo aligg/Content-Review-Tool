@@ -65,16 +65,15 @@ def queue():
 
     badwords_list = [w.word for w in BadWord.query.all()]
     badwords = str(badwords_list)
-    matches = []
+    matches = {}
     
     for item in comments:
         for word in item.body.split():
-            r = re.search(r"(?:^|\W)" + re.escape(word) + r"(?:$|\W)", badwords, re.IGNORECASE)
-            
+            r = re.search(r"(?:^|\W)" + re.escape(word) + r"(?:$|\W)", badwords, re.IGNORECASE)   
             if r is None or len(word) < 3:
                 continue
             else:
-                matches.append((word, item.link_id))
+                matches[item.link_id] = word
 
     print matches
 

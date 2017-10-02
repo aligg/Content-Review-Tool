@@ -4,8 +4,14 @@
 
 {% for comment in comments %}
 <div id="reviewobject-{{loop.index}}">
+{% for link_id, word in matches.items() %}
+    {% if link_id == comment.link_id %}
+    <div class="bannerwarning">Warning, Warning! This comment contains potential badwords: "{{word}}"<br><br></div>
+    {% endif %}
+{% endfor %}
+
 Review Item {{loop.index}}<br>
-<b>Comment ID:</b>{{comment.link_id}} <a href="https://www.reddit.com/{{ comment.permalink }}" target="_blank">View on Reddit</a>
+<b>Comment ID:</b> {{comment.link_id}} <a href="https://www.reddit.com/{{ comment.permalink }}" target="_blank">View on Reddit</a>
 
 <h1> Comment for Review: </h1>
 <p>{{ comment.body }} </p><br><br>
