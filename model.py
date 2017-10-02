@@ -68,8 +68,24 @@ class Action(db.Model):
     def __repr__(self):
         """Prettify printed output"""
 
-        return "<Action action_id=%s label_applied=%s item_id=%s reviewer_id=%s" % (self.action_id, self.label_applied, 
+        return "<Action action_id=%s label_applied=%s item_id=%s reviewer_id=%s>" % (self.action_id, self.label_applied, 
                                                                                 self.item_id, self.reviewer_id)
+
+
+class BadWord(db.Model):
+    """bad words highlighted in tool"""
+
+    __tablename__= "badwords"
+
+    word_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    word = db.Column(db.String(50), nullable=False)
+    language = db.Column(db.String(10), nullable=True)
+    category = db.Column(db.String(50), default="profanity", nullable=True)
+
+    def __repr__(self):
+        """Prettify printed output"""
+
+        return "<Word word_id=%s word=%s>" % (self.word_id, self.word)
 
 
 ##############################################################################

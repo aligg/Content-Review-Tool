@@ -19,7 +19,8 @@ app.jinja_env.undefined = StrictUndefined
 
 @app.context_processor
 def create_counter():
-    """Created counter showing daily reviews for logged in user"""
+    """Creates counter showing daily reviews for logged in user with day in UTC"""
+
     if not session or not ("reviewer id" in session or "handle" in session):
         return dict(rev_count=[])
 

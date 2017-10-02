@@ -3,7 +3,7 @@ import os
 import praw
 
 from sqlalchemy import func
-from model import (Action, Reviewer, Item, connect_to_db, db)
+from model import (Action, Reviewer, Item, BadWord, connect_to_db, db)
 from server import app
 import datetime
 
@@ -83,6 +83,37 @@ def load_items():
             db.session.add(item)
 
     db.session.commit()
+
+
+def load_words():
+    """Populate base data from badwords db"""
+
+    for row in open("seeddata"):
+        row = row.rstrip()
+        word_id, word, language = row.split(",")
+
+        word = BadWord(word_id=word_id,
+                        word=word,
+                        language=language,
+                    category="profanity")
+
+        db.session.add(word)
+    db.session.commit()
+
+
+
+def set_val_user_id():
+    """Set value for the next word_id after seeding database"""
+
+    # Get the Max user_id in the database
+    result = db.session.query(func.max(BadWord.word_id)).one()
+    max_id = int(result[0])
+
+    # Set the value for the next user_id to be max_id + 1
+    query = "SELECT setval('badwords_word_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.commit()
+
     
 
 reddit = auth()
@@ -98,6 +129,8 @@ if __name__ == "__main__":
     # db.create_all()
 
     load_items()
+    #load_words()
+    set_val_user_id()
 
 
     
