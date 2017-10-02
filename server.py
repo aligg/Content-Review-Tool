@@ -3,9 +3,10 @@
 from jinja2 import StrictUndefined
 from flask import (Flask, jsonify, render_template, redirect, request, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
-from model import(connect_to_db, db, Item, Reviewer, Action)
+from model import(connect_to_db, db, Item, Reviewer, Action, BadWord)
 from datetime import (datetime, date)
 from passlib.context import CryptContext
+import re
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
                                 deprecated="auto")
@@ -41,14 +42,13 @@ def create_counter():
         rev_count = i[0]
 
     return dict(rev_count=rev_count)
-
-
     #need to change time to local for this to work super smoothly, both in db & here
 
 
 @app.route('/')
 def index():
     """Landing Page / Queue Dashboard"""
+
     print session
 
     return render_template("homepage.html")
@@ -61,10 +61,27 @@ def queue():
     
     item_id_list = [a.item_id for a in Action.query.all()]
     
-    #why is this not working?
-    comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list))).limit(5).all()
+    comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list))).limit(5).all() #could change this to allow items to be reviewed by other users up to 3 times
 
-    return render_template("queue.html", comments=comments)
+    badwords_list = [w.word for w in BadWord.query.all()]
+    badwords = str(badwords_list)
+    matches = []
+    
+    for item in comments:
+        for word in item.body.split():
+            r = re.search(r"(?:^|\W)" + re.escape(word) + r"(?:$|\W)", badwords, re.IGNORECASE)
+            
+            if r is None or len(word) < 3:
+                continue
+            else:
+                matches.append((word, item.link_id))
+
+    print matches
+
+
+    return render_template("queue.html", 
+                            comments=comments,
+                            matches=matches)
 
 
 @app.route('/submit', methods=["POST"])
@@ -165,6 +182,7 @@ def logout():
     session.pop("reviewer id", None)
     session.pop("handle", None)
     flash("You are now logged out")
+    
     return redirect("/")
 
 
