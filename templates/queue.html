@@ -10,8 +10,7 @@
     {% endif %}
 {% endfor %}
 
-Review Item {{loop.index}}<br>
-<b>Comment ID:</b> {{comment.link_id}} <a href="https://www.reddit.com/{{ comment.permalink }}" target="_blank">View on Reddit</a>
+Review Item {{loop.index}} <b>Comment ID:</b> {{comment.link_id}}<br><br><br>
 
 <h1> Comment for Review: </h1>
 <p>{{ comment.body }} </p><br><br>
@@ -25,9 +24,9 @@ Review Item {{loop.index}}<br>
 
     </tr>
     <tr>
-        <td>{{ comment.submission }}</td>
-        <td>{{ comment.subreddit }}</td>
-        <td>{{ comment.author }}</td>  
+        <td><a href="https://www.reddit.com/{{ comment.permalink }}" target="_blank">{{ comment.submission }}</a></td>
+        <td><a href="https://www.reddit.com/r/{{ comment.subreddit }}" target="_blank">{{ comment.subreddit }}</a></td>
+        <td><a href="https://www.reddit.com/user/{{ comment.author }}" target="_blank">{{ comment.author }}</td>  
     </tr>
     </table>
     <br><br>
