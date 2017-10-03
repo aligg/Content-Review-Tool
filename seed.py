@@ -8,7 +8,7 @@ from server import app
 import datetime
 
 
-def auth():
+def authorize():
     """authorize using praw"""
 
     reddit = praw.Reddit(client_id=os.environ['CLIENT_ID'],
@@ -116,8 +116,8 @@ def set_val_user_id():
 
     
 
-reddit = auth()
-grab_comments(reddit)
+reddit = authorize()
+# grab_comments(reddit)
 
 
 

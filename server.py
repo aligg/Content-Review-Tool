@@ -3,10 +3,12 @@
 from jinja2 import StrictUndefined
 from flask import (Flask, jsonify, render_template, redirect, request, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
-from model import(connect_to_db, db, Item, Reviewer, Action, BadWord)
+from model import (connect_to_db, db, Item, Reviewer, Action, BadWord)
 from datetime import (datetime, date)
 from passlib.context import CryptContext
+import seed
 import re
+
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
                                 deprecated="auto")
@@ -49,6 +51,7 @@ def create_counter():
 def index():
     """Landing Page / Queue Dashboard"""
 
+    session.pop("pickermode", None)
     print session
 
     return render_template("homepage.html")
@@ -85,7 +88,7 @@ def queue():
 @app.route('/picker')
 def display_picker():
     """Displays form for reviewer to specify review parameters"""
-
+    print session
     return render_template("picker.html")
 
 
@@ -96,8 +99,18 @@ def picker_handler():
     subreddit = request.form.get("subreddit")
     sortby = request.form.get("sort")
     timeframe = request.form.get("time")
+    session["pickermode"] = "on"
+    reddit = seed.authorize()
 
-    return render_template("/")
+    submissions = {}   
+
+    # for submission in reddit.subreddit('all').top('hour', limit=50):
+    #     submission.comment_sort = "new"
+    #     submissions[submission.id] = submission
+       
+    # return submissions
+
+    return render_template("homepage.html")
 
 
 @app.route('/submit', methods=["POST"])
