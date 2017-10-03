@@ -64,7 +64,10 @@ def queue():
     
     item_id_list = [a.item_id for a in Action.query.all()]
     
-    comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list))).limit(5).all() #could change this to allow items to be reviewed by other users up to 3 times
+    if "pickermode" in session:
+        comments = Item.query.filter(Item.subreddit==session["pickermode"],db.not_(Item.item_id.in_(item_id_list))).limit(5).all()
+    else:
+        comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list))).limit(5).all() #could change this to allow items to be reviewed by other users up to 3 times
 
     badwords_list = [w.word for w in BadWord.query.all()]
     badwords = str(badwords_list)
@@ -99,18 +102,19 @@ def picker_handler():
     subreddit = request.form.get("subreddit")
     sortby = request.form.get("sort")
     timeframe = request.form.get("time")
-    session["pickermode"] = "on"
+    session["pickermode"] = subreddit
     reddit = seed.authorize()
 
     submissions = {}   
-
-    # for submission in reddit.subreddit('all').top('hour', limit=50):
-    #     submission.comment_sort = "new"
-    #     submissions[submission.id] = submission
+    #use if statements for the top one
+    for submission in reddit.subreddit(subreddit).top(timeframe, limit=50):
+        submission.comment_sort = "new"
+        submissions[submission.id] = submission
        
-    # return submissions
+    comments = seed.grab_comments(reddit, submissions)
+    seed.load_items(comments)
 
-    return render_template("homepage.html")
+    return redirect("/queue")
 
 
 @app.route('/submit', methods=["POST"])

@@ -29,11 +29,11 @@ def grab_submissions(reddit):
     return submissions
 
 
-def grab_comments(reddit):
+def grab_comments(reddit, s=None):
     """ grabs comments associated with recent submission posts & creates dict"""
 
-   
-    s = grab_submissions(reddit)
+    if not s:
+        s = grab_submissions(reddit)
 
     comments = {}
     count = 0
@@ -60,12 +60,15 @@ def grab_comments(reddit):
     return comments
 
 
-def load_items():
+def load_items(comments=None):
     """Populate items table with data from Reddit API"""
 
     link_id_list = [a.link_id for a in Item.query.all()]
+    
+    if comments is None:
+        comments = grab_comments(reddit)
 
-    for link_id, values in grab_comments(reddit).items(): 
+    for link_id, values in comments.items(): 
         if link_id not in link_id_list:
             parent = values.get('parent', None)
             item = Item(
