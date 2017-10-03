@@ -6,14 +6,21 @@
 <div id="reviewobject-{{loop.index}}">
 {% for link_id, word in matches.items() %}
     {% if link_id == comment.link_id %}
-    <div class="bannerwarning">Warning, Warning! This comment contains potential badwords: "{{word}}"<br><br></div>
+    <div class="bannerwarning">Warning, Warning! This comment contains potential badwords: "{{word}}"</div>
     {% endif %}
 {% endfor %}
 
-Review Item {{loop.index}} <b>Comment ID:</b> {{comment.link_id}}<br><br><br>
+Review Item {{loop.index}} <b>ID:</b> {{comment.link_id}}<br>
 
+
+{% if "imagemode" not in session %}
 <h1> Comment for Review: </h1>
 <p>{{ comment.body }} </p><br><br>
+{% endif %}
+{% if "imagemode" in session %}
+<h1> Image for Review: </h1>
+<img src="{{comment.body }}" alt="Oops, loading issue. Head to Reddit proper to see the image." height=400px><br><br>
+{% endif %}
 
 <b>Context</b>
     <table style="width:45%">

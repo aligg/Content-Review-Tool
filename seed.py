@@ -34,7 +34,7 @@ def grab_images(reddit):
     """grabs images from pics subreddit and create dictionary"""
     
     images={}
-    for submission in reddit.subreddit('pics').top('week', limit=50):
+    for submission in reddit.subreddit('pics').controversial('week', limit=50):
         s=submission
         images[s.id] = {"body" : s.url,
                     "subreddit" : s.subreddit.display_name,
