@@ -3,3 +3,4 @@ env/
 secret.sh
 .DS_Store
 seeddatatest
+testing.py
