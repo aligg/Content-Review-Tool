@@ -2,6 +2,7 @@
 
 var currentReview = 1
 
+
 //hide review objects 2-5
 for (var i = 2; i<=5; i++){ 
     $('#reviewobject-'+i).hide();
@@ -14,12 +15,20 @@ for (var i = 2; i<=5; i++){
     $('.back').hide();
    
 
+//if nothing left to review
+function checkBatchSize(){
+    if (batchsize == 0) 
+    {
+    alert("You've booted the queue! Redirecting home.");
+    window.location.href = "/"
+    }
+}
 
 //iterate through objects and hide previous display next one
 function displayNextReview() {
-    if (currentReview < 5)
+    checkBatchSize()
+    if (currentReview < batchsize)
     {
-
         $('#reviewobject-'+currentReview).hide();
         $('#formobject-'+currentReview).hide();
         currentReview++;  
@@ -29,14 +38,17 @@ function displayNextReview() {
         $('#submit').hide();
 
     }
-    if (currentReview == 5) {
+    if (currentReview == batchsize) {
         $('.next').hide();
         $('#submit').show();
     }
     $('.back').show()
 
 }
+
+//Same as displayNext but allows for prior button
 function displayPriorReview() {
+    checkBatchSize()
     if (currentReview > 1)  
     {   
         $('.back').show()
@@ -52,10 +64,14 @@ function displayPriorReview() {
     }
 }
 
+//event listeners
+$(document).ready(checkBatchSize);
 $('.next').on('click', displayNextReview);
 $('.back').on('click', displayPriorReview);
 
 
+
+//hotkeys while in queue
 $(document).keypress(function(e) {
     if($(".notes").is(":focus")) return;
     {

@@ -81,11 +81,9 @@ def queue():
             else:
                 matches[item.link_id] = word
 
-    print matches
-
-
     return render_template("queue.html", 
                             comments=comments,
+                            batchsize = len(comments),
                             matches=matches)
 
 @app.route('/picker')
@@ -121,7 +119,9 @@ def picker_handler():
 def submit():
     """Handled submissions from queue and redirects to next page"""
 
-    for i in range(1,6):
+    batchsize=int(request.form.get("batchsize"))
+
+    for i in range(1,(batchsize+1)):
         item = request.form.get("item_id-"+str(i))
         labels = request.form.get("label-"+str(i))
         notes = request.form.get("notes-"+str(i))
@@ -198,8 +198,6 @@ def login_handler():
             flash("You are logged in")
         else:
             flash("Incorrect credentials")
-            print password, "PASSWORDD RIGHT HEREE"
-            print reviewer.password, "revPASSWORDD RIGHT HEREE"
             return redirect("/login")
          
     else:

@@ -21,7 +21,8 @@ def authorize():
 def grab_submissions(reddit):
     """grabs submissions from reddit controversial front page and data associated with them"""
 
-    submissions = {}   
+    submissions = {} 
+
     for submission in reddit.subreddit('all').top('hour', limit=50):#reddit.front.controversial(limit=10):     
         submission.comment_sort = "new"
         submissions[submission.id] = submission
@@ -44,7 +45,6 @@ def grab_comments(reddit, s=None):
         for comment_num in range(0, num_comments): 
             comment = submission.comments[comment_num]
             comments[comment.link_id] = { "body" : comment.body,
-                                                "author" : comment.author.name,
                                                 "subreddit" : comment.subreddit.display_name,
                                                 "permalink" : comment.permalink(),
                                                 "controversiality" : comment.controversiality,
@@ -56,6 +56,8 @@ def grab_comments(reddit, s=None):
             
             if not comment.is_root:
                 comments[comment.link_id].update({"parent" : comment.parent().body}) 
+            if comment.author is not None:
+                comments[comment.link_id].update({"author" : comment.author.name})
             # count += 1           
     return comments
 
@@ -71,10 +73,11 @@ def load_items(comments=None):
     for link_id, values in comments.items(): 
         if link_id not in link_id_list:
             parent = values.get('parent', None)
+            author = values.get('author', None)
             item = Item(
                 link_id = link_id,
                 body = values['body'],
-                author = values['author'],
+                author = author,
                 submission = values['submission'],
                 subreddit = values['subreddit'],
                 permalink = values['permalink'],
@@ -108,11 +111,9 @@ def load_words():
 def set_val_user_id():
     """Set value for the next word_id after seeding badwords table"""
 
-    # Get the max word_id in the database
     result = db.session.query(func.max(BadWord.word_id)).one()
     max_id = int(result[0])
 
-    # Set the value for the next word_id to be max_id + 1
     query = "SELECT setval('badwords_word_id_seq', :new_id)"
     db.session.execute(query, {'new_id': max_id + 1})
     db.session.commit()
@@ -120,7 +121,7 @@ def set_val_user_id():
     
 
 reddit = authorize()
-# grab_comments(reddit)
+#grab_comments(reddit)
 
 
 

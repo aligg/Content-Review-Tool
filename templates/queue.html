@@ -50,7 +50,8 @@ Review Item {{loop.index}} <b>Comment ID:</b> {{comment.link_id}}<br><br><br>
 
 
 <form action="/submit" method="post">
-    <input type="hidden" name="reviewer_id" value={{ session['reviewer id'] }}> 
+    <input type="hidden" name="reviewer_id" value={{ session['reviewer id'] }}>
+    <input type="hidden" name="batchsize" value={{batchsize}}> 
     {% for comment in comments %}
     <div id="formobject-{{loop.index}}">
         <input type="hidden" name="item_id-{{loop.index}}" value={{comment.item_id}}>
@@ -69,5 +70,6 @@ Review Item {{loop.index}} <b>Comment ID:</b> {{comment.link_id}}<br><br><br>
 
 <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="/static/queue.js"></script>
+<script type="text/javascript"> var batchsize = {{ batchsize }};</script>
 
 {% endblock %}
