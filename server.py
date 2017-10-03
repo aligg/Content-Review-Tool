@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import (connect_to_db, db, Item, Reviewer, Action, BadWord)
 from datetime import (datetime, date)
 from passlib.context import CryptContext
-import seed
+# from seed import (authorize, load_items, grab_comments)
 import re
 
 
@@ -52,20 +52,22 @@ def index():
     """Landing Page / Queue Dashboard"""
 
     session.pop("pickermode", None)
+    session.pop("imagemode", None)
     print session
 
     return render_template("homepage.html")
 
 
-
 @app.route('/queue')
 def queue():
     """Opens the queue and retrieves items for review"""
-    
+    print session, "<-- Huzzah, session"
     item_id_list = [a.item_id for a in Action.query.all()]
     
     if "pickermode" in session:
         comments = Item.query.filter(Item.subreddit==session["pickermode"],db.not_(Item.item_id.in_(item_id_list))).limit(5).all()
+    elif "imagemode" in session:
+        comments = Item.query.filter(Item.parent=="image",db.not_(Item.item_id.in_(item_id_list))).limit(5).all()
     else:
         comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list))).limit(5).all() #could change this to allow items to be reviewed by other users up to 3 times
 
@@ -86,6 +88,15 @@ def queue():
                             batchsize = len(comments),
                             matches=matches)
 
+@app.route('/image-queue')
+def image_queue():
+    """sets up image review """
+
+    session["imagemode"]= "on"
+
+    return redirect("/queue")
+
+
 @app.route('/picker')
 def display_picker():
     """Displays form for reviewer to specify review parameters"""
@@ -101,7 +112,7 @@ def picker_handler():
     sortby = request.form.get("sort")
     timeframe = request.form.get("time")
     session["pickermode"] = subreddit
-    reddit = seed.authorize()
+    reddit = authorize()
 
     submissions = {}   
     #use if statements for the top one
@@ -109,8 +120,8 @@ def picker_handler():
         submission.comment_sort = "new"
         submissions[submission.id] = submission
        
-    comments = seed.grab_comments(reddit, submissions)
-    seed.load_items(comments)
+    comments = grab_comments(reddit, submissions)
+    load_items(comments)
 
     return redirect("/queue")
 

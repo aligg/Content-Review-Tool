@@ -22,12 +22,29 @@ def grab_submissions(reddit):
     """grabs submissions from reddit controversial front page and data associated with them"""
 
     submissions = {} 
-
     for submission in reddit.subreddit('all').top('hour', limit=50):#reddit.front.controversial(limit=10):     
         submission.comment_sort = "new"
         submissions[submission.id] = submission
        
     return submissions
+
+
+
+def grab_images(reddit):
+    """grabs images from pics subreddit and create dictionary"""
+    
+    images={}
+    for submission in reddit.subreddit('pics').top('week', limit=50):
+        s=submission
+        images[s.id] = {"body" : s.url,
+                    "subreddit" : s.subreddit.display_name,
+                    "permalink": s.permalink,
+                    "submission" : s.title,
+                    "upvotes": s.ups,
+                    "downvotes": s.downs,
+                    "author": s.author.name}
+    return images
+
 
 
 def grab_comments(reddit, s=None):
@@ -85,7 +102,32 @@ def load_items(comments=None):
                 upvotes = values['upvotes'],
                 downvotes = values['downvotes'],
                 parent = parent)
-            print link_id, values['body']
+            print "DB seeded with more comments!"
+            db.session.add(item)
+
+    db.session.commit()
+
+def load_images():
+    """Populate items table with image data from Reddit API"""
+
+    link_id_list = [a.link_id for a in Item.query.all()]
+
+    images = grab_images(reddit)
+
+    for link_id, values in images.items(): 
+        if link_id not in link_id_list:
+            author = values.get('author', None)
+            item = Item(
+                link_id = link_id,
+                body = values['body'],
+                author = author,
+                submission = values['submission'],
+                subreddit = values['subreddit'],
+                permalink = values['permalink'],
+                upvotes = values['upvotes'],
+                downvotes = values['downvotes'],
+                parent = "image")
+            print "DB seeded with images!"
             db.session.add(item)
 
     db.session.commit()
@@ -121,19 +163,14 @@ def set_val_user_id():
     
 
 reddit = authorize()
-#grab_comments(reddit)
-
-
 
 
 if __name__ == "__main__":
 
     connect_to_db(app)
 
-    # db.create_all()
-
+    load_images()
     load_items()
-    #load_words()
     set_val_user_id()
 
 
