@@ -89,13 +89,38 @@ class BadWord(db.Model):
 
 
 ##############################################################################
-#Helper functions
+#Helper functions & example data for testing
 
-def connect_to_db(app):
+def example_data():
+    """Create some sample data."""
+
+    Action.query.delete()
+    Item.query.delete()
+    Reviewer.query.delete()
+
+
+    reviewer = Reviewer(reviewer_id=1, email="ali.glenesk@gmail.com", handle="alig", password="password", is_manager=True)
+    rev2 = Reviewer(reviewer_id=2, email="miau@gmail.com", handle="miau", password="miau", is_manager=False)
+
+    item = Item(item_id=1, link_id="123", body="I LOVE TO POST ON REDDIT", 
+                author="redditor", submission="subtest", subreddit="news",
+                permalink="/r/news/comments/73xmht/officials_us_to_ask_cuba_to_cut_embassy_staff_by/dntxqkk", 
+                controversiality=0, upvotes=1, downvotes=0, parent=None)
+    image = Item(item_id=556, link_id="72xep5", body="https://i.redd.it/lqoz1uf6ijoz.jpg", 
+                author="Smuggling_Plumz", submission = "Jabba the Trump", subreddit= "pics",
+                permalink="/r/pics/comments/72xep5/jabba_the_trump/",
+                controversiality=None, upvotes=71510, downvotes=0, parent="image")
+
+    action = Action(action_id=1, item_id=1, reviewer_id=1, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
+    
+    db.session.add_all([reviewer, rev2, item, action, image])
+    db.session.commit()
+
+def connect_to_db(app, db_uri="postgresql:///crt"):
     """Connect the database to app"""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///crt'
-    app.config['SQL_ALCHEMY_TRACK_MODIFICATIONS'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
     db.app = app
     db.init_app(app)

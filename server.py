@@ -61,7 +61,7 @@ def index():
 @app.route('/queue')
 def queue():
     """Opens the queue and retrieves items for review"""
-    print session, "<-- Huzzah, session"
+
     item_id_list = [a.item_id for a in Action.query.all()]
     
     if "pickermode" in session:
@@ -83,6 +83,8 @@ def queue():
             else:
                 matches[item.link_id] = word
 
+
+
     return render_template("queue.html", 
                             comments=comments,
                             batchsize = len(comments),
@@ -100,7 +102,7 @@ def image_queue():
 @app.route('/picker')
 def display_picker():
     """Displays form for reviewer to specify review parameters"""
-    print session
+    
     return render_template("picker.html")
 
 
@@ -233,8 +235,12 @@ if __name__ == "__main__":
     app.debug = True
     app.jinja_env.auto_reload = app.debug
 
-    connect_to_db(app)
+    connect_to_db(app, "postgresql:///crt")
 
     DebugToolbarExtension(app)
 
     app.run(host='0.0.0.0')
+
+
+
+
