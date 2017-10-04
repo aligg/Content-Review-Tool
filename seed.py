@@ -4,7 +4,6 @@ import praw
 
 from sqlalchemy import func
 from model import (Action, Reviewer, Item, BadWord, connect_to_db, db)
-from server import app
 import datetime
 
 
@@ -34,7 +33,7 @@ def grab_images(reddit):
     """grabs images from pics subreddit and create dictionary"""
     
     images={}
-    for submission in reddit.subreddit('pics').controversial('week', limit=50):
+    for submission in reddit.subreddit('pics').rising('new', limit=50):
         s=submission
         images[s.id] = {"body" : s.url,
                     "subreddit" : s.subreddit.display_name,
@@ -166,7 +165,8 @@ reddit = authorize()
 
 
 if __name__ == "__main__":
-
+    
+    from server import app
     connect_to_db(app)
 
     load_images()

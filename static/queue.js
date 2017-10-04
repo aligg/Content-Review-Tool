@@ -24,6 +24,12 @@ function checkBatchSize(){
     }
 }
 
+//blurs image
+function blurImage(){
+    console.log("We got here ya yayaya");
+    $('.imageforreview').blur();
+}
+
 //iterate through objects and hide previous display next one
 function displayNextReview() {
     checkBatchSize()
@@ -66,9 +72,9 @@ function displayPriorReview() {
 
 //event listeners
 $(document).ready(checkBatchSize);
+$('.switch').on('click', blurImage);
 $('.next').on('click', displayNextReview);
 $('.back').on('click', displayPriorReview);
-
 
 
 //hotkeys while in queue
@@ -86,6 +92,10 @@ $(document).keypress(function(e) {
         if(e.which == 99)  //c
         { 
         $('.back').trigger('click');
+        }
+        if(e.which == 113) //q
+        {
+        $('.navbutton-home').trigger('click');
         }
     }
 });

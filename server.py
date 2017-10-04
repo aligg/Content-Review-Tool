@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import (connect_to_db, db, Item, Reviewer, Action, BadWord)
 from datetime import (datetime, date)
 from passlib.context import CryptContext
-# from seed import (authorize, load_items, grab_comments)
+import seed
 import re
 
 
@@ -112,7 +112,7 @@ def picker_handler():
     sortby = request.form.get("sort")
     timeframe = request.form.get("time")
     session["pickermode"] = subreddit
-    reddit = authorize()
+    reddit = seed.authorize()
 
     submissions = {}   
     #use if statements for the top one
@@ -120,8 +120,8 @@ def picker_handler():
         submission.comment_sort = "new"
         submissions[submission.id] = submission
        
-    comments = grab_comments(reddit, submissions)
-    load_items(comments)
+    comments = seed.grab_comments(reddit, submissions)
+    seed.load_items(comments)
 
     return redirect("/queue")
 
