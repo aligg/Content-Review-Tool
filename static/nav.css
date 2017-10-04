@@ -99,3 +99,7 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+.imageblurring {
+    filter: blur(6px);
+}

@@ -4,17 +4,18 @@
 
 {% for comment in comments %}
 <div id="reviewobject-{{loop.index}}">
-{% for link_id, word in matches.items() %}
-    {% if link_id == comment.link_id %}
-    <div class="bannerwarning">Warning, Warning! This comment contains potential badwords: "{{word}}"</div>
+    {% for link_id, word in matches.items() %}
+        {% if link_id == comment.link_id %}
+        <div class="bannerwarning">Warning, Warning! This comment contains potential badwords: "{{word}}"</div>
     {% endif %}
 {% endfor %}
 
 Review Item {{loop.index}} <b>ID:</b> {{comment.link_id}}
 
 <label class="switch">
-<input type="checkbox">
-<span class="slider round"></span>
+    <input type="checkbox">
+    <span class="slider round">
+    </span>
 </label><br>
 
 
@@ -24,7 +25,7 @@ Review Item {{loop.index}} <b>ID:</b> {{comment.link_id}}
 {% endif %}
 {% if "imagemode" in session %}
         <h1> Image for Review: </h1>
-            <img src="{{comment.body }}" alt="Oops, loading issue. Head to Reddit proper to see the image." height=400px class="imageforreview"><br><br>
+            <img src="{{comment.body }}" alt="Oops, loading issue. Head to Reddit proper to see the image." height=400px id="imageforreview-{{loop.index}}"><br><br>
 {% endif %}
 
 <b>Context</b>
@@ -72,14 +73,14 @@ Review Item {{loop.index}} <b>ID:</b> {{comment.link_id}}
     </div>
     {% endfor %}
     <br><br>
-
     <input type="button" name="back" value="back" class="back">
     <input type="button" name="next" value="next" class="next">
     <input type="submit" value="Submit" id="submit" class="submit">
-    </form>
+</form>
 
 
 <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/stackblur-canvas/1.4.0/stackblur.min.js"></script>
 <script src="/static/queue.js"></script>
 <script type="text/javascript"> var batchsize = {{ batchsize }};</script>
 

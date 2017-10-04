@@ -1,6 +1,7 @@
 
 
-var currentReview = 1
+var currentReview = 1;
+var amIBlurred = false;
 
 
 //hide review objects 2-5
@@ -24,10 +25,10 @@ function checkBatchSize(){
     }
 }
 
-//blurs image
-function blurImage(){
-    console.log("We got here ya yayaya");
-    $('.imageforreview').blur();
+//blurs & unblurs image
+function toggleBlur()
+{
+    $('#imageforreview-'+currentReview).toggleClass("imageblurring");
 }
 
 //iterate through objects and hide previous display next one
@@ -72,7 +73,7 @@ function displayPriorReview() {
 
 //event listeners
 $(document).ready(checkBatchSize);
-$('.switch').on('click', blurImage);
+$('.slider').on('click', toggleBlur);
 $('.next').on('click', displayNextReview);
 $('.back').on('click', displayPriorReview);
 
@@ -93,8 +94,12 @@ $(document).keypress(function(e) {
         { 
         $('.back').trigger('click');
         }
-        if(e.which == 113) //q
-        {
+        if(e.which == 98)  //b
+        { 
+        $('.slider').trigger('click');
+        }
+        if(e.which == 113)  //q still not working
+        { 
         $('.navbutton-home').trigger('click');
         }
     }
