@@ -1,6 +1,9 @@
 
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import pytz
+
+pacific = pytz.timezone('US/Pacific')
 
 db = SQLAlchemy()
 
@@ -56,12 +59,12 @@ class Action(db.Model):
     action_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     item_id = db.Column(db.ForeignKey('items.item_id'))
     reviewer_id = db.Column(db.ForeignKey('reviewers.reviewer_id'))
-    time_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow()) #not sure about this
+    time_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pacific)) 
     label_applied = db.Column(db.String(30), nullable=False)
     notes = db.Column(db.String(100), nullable=True)
 
     #Define relationships to other tables
-    reviewer = db.relationship("Reviewer", backref=db.backref("actions", order_by=time_created)) #curious if you can add in desc here & line below 
+    reviewer = db.relationship("Reviewer", backref=db.backref("actions", order_by=time_created)) 
     item = db.relationship("Item", backref=db.backref("actions", order_by=time_created))
     
 
@@ -111,7 +114,7 @@ def example_data():
                 permalink="/r/pics/comments/72xep5/jabba_the_trump/",
                 controversiality=None, upvotes=71510, downvotes=0, parent="image")
 
-    action = Action(action_id=1, item_id=1, reviewer_id=1, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
+    action = Action(action_id=1, item_id=1, reviewer_id=1, time_created=datetime.datetime.now(pacific), label_applied="brand_safe", notes="fine")
     
     db.session.add_all([reviewer, rev2, item, action, image])
     db.session.commit()
