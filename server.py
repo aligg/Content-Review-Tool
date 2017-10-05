@@ -8,9 +8,8 @@ from datetime import (datetime, date)
 from passlib.context import CryptContext
 import seed
 import re
-import pytz
 
-pacific = pytz.timezone('US/Pacific')
+
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
                                 deprecated="auto")
 
@@ -23,7 +22,7 @@ app.jinja_env.undefined = StrictUndefined
 
 @app.context_processor
 def create_counter():
-    """Creates counter showing daily reviews for logged in user with day in local time"""
+    """Creates counter showing daily reviews for logged in user with day in utc time"""
 
     if not session or not ("reviewer id" in session or "handle" in session):
         return dict(rev_count=[])
@@ -51,9 +50,6 @@ def create_counter():
 @app.route('/')
 def index():
     """Landing Page / Queue Dashboard"""
-
-    time= datetime.now(pacific)
-    print time, "CHECK IT OUT TIME"
 
     session.pop("pickermode", None)
     session.pop("imagemode", None)
@@ -143,12 +139,12 @@ def submit():
         labels = request.form.get("label-"+str(i))
         notes = request.form.get("notes-"+str(i))
         reviewer = request.form.get("reviewer_id")
-        time = datetime.now(pacific)
+        time_created = datetime.datetime.utcnow()
         print time, "<- time huzzah"
 
         new_action = Action(item_id=item,
                             reviewer_id=reviewer,
-                            time_created=time,
+                            time_created=time_created,
                             label_applied=labels,
                             notes=notes)
         db.session.add(new_action)
