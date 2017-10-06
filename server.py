@@ -9,6 +9,7 @@ from passlib.context import CryptContext
 import seed
 import re
 import dashboard
+import numpy
 
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
@@ -62,15 +63,25 @@ def index():
 @app.route('/queue')
 def queue():
     """Opens the queue and retrieves items for review"""
+    
+    item_id_list = [a.item_id for a in Action.query.filter(Action.reviewer_id==session["reviewer id"])]
 
-    item_id_list = [a.item_id for a in Action.query.all()]
+    less_than_4 = []
+    sql = """   select item_id from (select item_id, count(item_id) as count from actions group by 1 having count(item_id) = 3) as a;"""
+    cursor = db.session.execute(sql)
+    s = cursor.fetchall()
+
+    for i in range(len(s)):
+        numb= int(s[i][0])
+        less_than_4.append(numb)
+
     
     if "pickermode" in session:
-        comments = Item.query.filter(Item.subreddit==session["pickermode"],db.not_(Item.item_id.in_(item_id_list))).limit(5).all()
+        comments = Item.query.filter(Item.subreddit==session["pickermode"],db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all()
     elif "imagemode" in session:
-        comments = Item.query.filter(Item.parent=="image",db.not_(Item.item_id.in_(item_id_list))).limit(5).all()
+        comments = Item.query.filter(Item.parent=="image",db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all()
     else:
-        comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list))).limit(5).all() #could change this to allow items to be reviewed by other users up to 3 times
+        comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all() #could change this to allow items to be reviewed by other users up to 3 times
 
     badwords_list = [w.word for w in BadWord.query.all()]
     badwords = str(badwords_list)
@@ -235,7 +246,6 @@ def logout():
 def display_dash():
     """renders dashboard"""
 
-
     return render_template("dashboard.html")
 
 
@@ -247,6 +257,14 @@ def total_dailies_data():
     
     return jsonify(data_dict)
 
+
+@app.route('/dashboard-line-agreement.json')
+def total_agreement_data():
+    """return daily agreement rate over time"""
+
+    data_dict = dashboard.get_table2_data()
+    
+    return jsonify(data_dict)
 
 if __name__ == "__main__":
     app.debug = True

@@ -2,6 +2,7 @@
 
 from model import (connect_to_db, db, Item, Reviewer, Action, BadWord)
 from datetime import (datetime, date)
+import numpy
 
 
 def table1_sql():
@@ -56,3 +57,107 @@ def get_table1_data():
         ]
     }
     return data_dict
+
+
+def table2_sql():
+    """Grabs data from database for use by agreement rate table"""
+
+    sql = """ select max(time_created) as last_review, item_id, count(item_id) as rev_count, array_agg(reviewer_id), string_agg(label_applied, ', ') 
+                from actions
+                group by 2
+                having count(item_id) > 1 
+                order by 1 desc;
+
+    """
+    cursor = db.session.execute(sql)
+    datasample = cursor.fetchall()
+
+    return datasample
+
+
+def agreement_rate_by_item():
+    """Create dictionary of agreement rate per item_id"""
+
+    
+    data_dict = {}
+
+    for item in table2_sql():
+        labels = str(item[4])
+        labels= labels.split(', ')
+
+        if len(labels) == 3 and len(set(labels)) == 2:
+            agreement_rate = .67
+        elif len(labels) == 2 and len(set(labels)) == 2:
+            agreement_rate = .5
+        elif len(set(labels)) == 1:
+            agreement_rate = 1
+
+        data_dict[item[1]] = {"last_review": item[0],
+                            "total_reviews": int(item[2]),
+                            "reviewers": item[3],
+                            "labels": labels,
+                            "agreement_rate": agreement_rate
+                            } #data_dict is now a dictionary w/ data for agreement_rate for each item
+
+
+    return data_dict
+
+
+def agreement_rate_maker():
+    """Calculate agreement rate daily average"""
+    
+    avg = {}
+    for item in agreement_rate_by_item().values():
+        if item['last_review'].date() not in avg.keys():
+            avg[item['last_review'].date()] = [item['agreement_rate']]
+        else:
+            avg[item['last_review'].date()].append(item['agreement_rate'])
+
+    days = []
+    rate = []
+    sample = []
+
+    for key, values in avg.items():
+        days.append(key)
+        sample.append(len(values))
+        rate.append(numpy.mean(values))
+
+    # need to come back to ordering once I have two days worth of data 
+
+    return (days, rate, sample)
+
+def get_table2_data():
+    """Spits out data for the agreements table nicely"""
+
+
+    data_dict = {
+        "labels":  agreement_rate_maker()[0],
+        "datasets": [
+            {
+                "label": "Daily Agreement Rate",
+                "fill": False,
+                "lineTension": 0.5,
+                "backgroundColor": "rgba(151,187,205,0.2)",
+                "borderColor": "rgba(151,187,205,1)",
+                "borderCapStyle": 'butt',
+                "borderDash": [],
+                "borderDashOffset": 0.0,
+                "borderJoinStyle": 'miter',
+                "pointBorderColor": "rgba(151,187,205,1)",
+                "pointBackgroundColor": "#fff",
+                "pointBorderWidth": 1,
+                "pointHoverRadius": 5,
+                "pointHoverBackgroundColor": "#fff",
+                "pointHoverBorderColor": "rgba(151,187,205,1)",
+                "pointHoverBorderWidth": 2,
+                "pointHitRadius": 10,
+                "data": agreement_rate_maker()[1],
+                "spanGaps": False}
+        ]
+    }
+
+    return data_dict
+
+
+
+
