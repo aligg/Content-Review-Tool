@@ -103,3 +103,10 @@ input:checked + .slider:before {
 .imageblurring {
     filter: blur(6px);
 }
+
+.crt-chart {
+    margin: auto;
+    width: 65%;
+}
+
+

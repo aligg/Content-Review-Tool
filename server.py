@@ -251,20 +251,22 @@ def display_dash():
 
 @app.route('/dashboard-line-dailies.json')
 def total_dailies_data():
-    """return total daily reviews over time"""
+    """return data for total daily reviews table in json format"""
 
     data_dict = dashboard.get_table1_data()
     
     return jsonify(data_dict)
 
 
+
 @app.route('/dashboard-line-agreement.json')
 def total_agreement_data():
-    """return daily agreement rate over time"""
+    """return data for daily agreement rate in json format"""
 
     data_dict = dashboard.get_table2_data()
     
     return jsonify(data_dict)
+
 
 if __name__ == "__main__":
     app.debug = True

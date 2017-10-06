@@ -23,6 +23,7 @@ class LoggedInServerTests(unittest.TestCase):
         db.create_all()
         example_data()
 
+
         def _mock_picker_handler():
             """creates mock picker handler to avoid doing real api calls during testing"""
         
@@ -32,10 +33,12 @@ class LoggedInServerTests(unittest.TestCase):
 
         server.picker_handler = _mock_picker_handler
 
+
     def tearDown(self):
         """Code to run after every test"""
         
         db.session.close()
+
 
     def test_homepage(self):
         """Can we reach the homepage?"""
@@ -43,6 +46,7 @@ class LoggedInServerTests(unittest.TestCase):
         result = self.client.get("/")
         self.assertIn("welcomes you", result.data)
         self.assertIn("Images Queue", result.data)
+
 
     def test_queue(self):
         """Test queue loading"""

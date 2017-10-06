@@ -104,7 +104,7 @@ def agreement_rate_by_item():
 
 
 def agreement_rate_maker():
-    """Calculate agreement rate daily average"""
+    """Calculate agreement rate daily average and add days and rates and sample size to separate ordered lists"""
     
     avg = {}
     for item in agreement_rate_by_item().values():
@@ -118,11 +118,13 @@ def agreement_rate_maker():
     sample = []
 
     for key, values in avg.items():
+        key = str(key)
         days.append(key)
         sample.append(len(values))
         rate.append(numpy.mean(values))
 
-    # need to come back to ordering once I have two days worth of data 
+    #need to come back to ordering once I have two days worth of data 
+    #need to prettify the day value to match other chart
 
     return (days, rate, sample)
 
