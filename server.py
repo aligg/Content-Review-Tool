@@ -8,6 +8,7 @@ from datetime import (datetime, date)
 from passlib.context import CryptContext
 import seed
 import re
+import dashboard
 
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
@@ -235,55 +236,15 @@ def display_dash():
     """renders dashboard"""
 
 
-
     return render_template("dashboard.html")
 
 
 @app.route('/dashboard-line-dailies.json')
 def total_dailies_data():
     """return total daily reviews over time"""
+
+    data_dict = dashboard.get_table1_data()
     
-    sql = """
-        select date_trunc('day', time_created) as date, count(action_id) as total_reviews
-        from actions
-        group by 1
-        order by 1 asc
-        """
-   
-    cursor = db.session.execute(sql)
-    datasample = cursor.fetchall()
-    labels = []
-    data = []
-
-    for item in datasample:
-        labels.append(str(item[0])[:10])
-        data.append(int(item[1]))
-
-    data_dict = {
-        "labels": labels,
-        "datasets": [
-            {
-                "label": "Daily Total Reviews",
-                "fill": False,
-                "lineTension": 0.5,
-                "backgroundColor": "rgba(151,187,205,0.2)",
-                "borderColor": "rgba(151,187,205,1)",
-                "borderCapStyle": 'butt',
-                "borderDash": [],
-                "borderDashOffset": 0.0,
-                "borderJoinStyle": 'miter',
-                "pointBorderColor": "rgba(151,187,205,1)",
-                "pointBackgroundColor": "#fff",
-                "pointBorderWidth": 1,
-                "pointHoverRadius": 5,
-                "pointHoverBackgroundColor": "#fff",
-                "pointHoverBorderColor": "rgba(151,187,205,1)",
-                "pointHoverBorderWidth": 2,
-                "pointHitRadius": 10,
-                "data": data,
-                "spanGaps": False}
-        ]
-    }
     return jsonify(data_dict)
 
 
