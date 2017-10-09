@@ -202,6 +202,12 @@ def add_reviewer():
 
     return redirect('/')
 
+
+@app.route('/training')
+def display_training():
+    """Display training info"""
+
+    return render_template("training.html")
 @app.route('/login')
 def login_form():
     """Displays login form"""

@@ -21,7 +21,7 @@ def grab_submissions(reddit):
     """grabs submissions from reddit controversial front page and data associated with them"""
 
     submissions = {} 
-    for submission in reddit.subreddit('all').top('hour', limit=50):#reddit.front.controversial(limit=10):     
+    for submission in reddit.subreddit('all').top('day', limit=50):#reddit.front.controversial(limit=10):     
         submission.comment_sort = "new"
         submissions[submission.id] = submission
        
@@ -169,7 +169,7 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
 
-    load_images()
+    # load_images()
     load_items()
     set_val_user_id()
 
