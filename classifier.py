@@ -55,6 +55,7 @@ def make_vectors():
     Y = np.array(labels)
 
     print X.shape, Y.shape
+    #testing
 
    
 
