@@ -10,6 +10,7 @@ import seed
 import re
 import dashboard
 import numpy
+import classifier
 
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
@@ -208,6 +209,8 @@ def display_training():
     """Display training info"""
 
     return render_template("training.html")
+
+
 @app.route('/login')
 def login_form():
     """Displays login form"""
@@ -265,7 +268,6 @@ def total_dailies_data():
     return jsonify(data_dict)
 
 
-
 @app.route('/dashboard-line-agreement.json')
 def total_agreement_data():
     """return data for daily agreement rate in json format"""
@@ -273,6 +275,16 @@ def total_agreement_data():
     data_dict = dashboard.get_table2_data()
     
     return jsonify(data_dict)
+
+
+@app.route('/testing-classifier')
+def testing():
+    """placeholder testing"""
+
+    classifier.organize_data()
+    classifier.make_vectors()
+
+    return "123"
 
 
 if __name__ == "__main__":
