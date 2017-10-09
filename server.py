@@ -245,6 +245,7 @@ def logout():
 @app.route('/dashboard')
 def display_dash():
     """renders dashboard"""
+    
 
     return render_template("dashboard.html")
 

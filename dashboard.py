@@ -106,25 +106,32 @@ def agreement_rate_by_item():
 def agreement_rate_maker():
     """Calculate agreement rate daily average and add days and rates and sample size to separate ordered lists"""
     
-    avg = {}
+    #Get agreement rates for all items w/ multiple reviews by day, where day is date of last review into a dict
+    day_and_rates = {}
     for item in agreement_rate_by_item().values():
-        if item['last_review'].date() not in avg.keys():
-            avg[item['last_review'].date()] = [item['agreement_rate']]
+        if item['last_review'].date() not in day_and_rates.keys():
+            day_and_rates[item['last_review'].date()] = [item['agreement_rate']]
         else:
-            avg[item['last_review'].date()].append(item['agreement_rate'])
+            day_and_rates[item['last_review'].date()].append(item['agreement_rate'])
 
     days = []
     rate = []
     sample = []
+    day_and_rates_list = []
 
-    for key, values in avg.items():
-        key = str(key)
-        days.append(key)
-        sample.append(len(values))
-        rate.append(numpy.mean(values))
+    for key, values in day_and_rates.items():
+        day_and_rates_list.append((key, values))
 
-    #need to come back to ordering once I have two days worth of data 
-    #need to prettify the day value to match other chart
+    #switched to using a list so that we can sort days
+    day_and_rates_list = sorted(day_and_rates_list)
+
+    for item in day_and_rates_list:
+        days.append(item[0]) #add days to list 
+        sample.append(len(item[1])) #calculate daily sample size & add to list
+        rate.append(numpy.mean(item[1])) #calculate daily avg & add to list
+
+    days = [str(day) for day in days] #format date as string for pretty display 
+         
 
     return (days, rate, sample)
 
