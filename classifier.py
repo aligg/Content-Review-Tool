@@ -32,6 +32,7 @@ def organize_data():
     group by 1,2,3
     order by 1 asc;
     """
+
     cursor = db.session.execute(sql)
     items = cursor.fetchall()
 
@@ -46,6 +47,7 @@ def organize_data():
 
 def make_vectors():
     """transform text into vectors """
+
     labels = organize_data()[0]
     comments = organize_data()[1]
 
@@ -54,13 +56,42 @@ def make_vectors():
     X = vectorizer.fit_transform(comments)
     Y = np.array(labels)
 
-    print X.shape, Y.shape
-    #testing
+    return (X, Y)
 
-   
+    #print X.shape, Y.shape (as of 10/9 shape is (357, 2598) (357,) items in list + unique words I thinK? 
+
+def cross_validate():
+    """ instantiate the classifier and cross-validate """
+
+    X = make_vectors()[0]
+    Y = make_vectors() [1]
+
+    classifier = BernoulliNB() #instantiate classifier
+
+    cv = cross_validation.StratifiedKFold(Y,5)
+
+    precision = []
+    recall = []
+    for train, test in cv:
+        X_train = X[train]
+        X_test = X[test]
+        Y_train = Y[train]
+        Y_test = Y[test]
+    #print len(Y_train), len(Y_test) (as of 10/9 299 and 73 respectively)
+        classifier.fit(X_train, Y_train)
+        Y_hat = classifier.predict(X_test)
+        p,r,_,_ = metrics.precision_recall_fscore_support(Y_test, Y_hat) #want to understand this line better 
+        precision.append(p[1])
+        recall.append(r[1])
+
+    print 'precision:',np.average(precision), '+/-', np.std(precision) #as of 10/9 12% precision and 6% recall 
+    print 'recall:', np.average(recall), '+/-', np.std(recall)
 
 
-#transform the data into vectors 
+
+
+
+
 
 #choose the right classifier and instantiate it
 

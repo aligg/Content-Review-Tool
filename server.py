@@ -283,6 +283,7 @@ def testing():
 
     classifier.organize_data()
     classifier.make_vectors()
+    classifier.cross_validate()
 
     return "123"
 
