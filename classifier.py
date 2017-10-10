@@ -6,10 +6,6 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn import cross_validation
 from sklearn import metrics
-
-# from model import (connect_to_db, db, Item, Reviewer, Action, BadWord)
-
-
 #Goal: Predict whether a comment is safe or not safe with reasonably high precision, maybe 85%?
 
 
@@ -84,7 +80,7 @@ def cross_validate():
         precision.append(p[1])
         recall.append(r[1])
 
-    print 'precision:',np.average(precision), '+/-', np.std(precision) #as of 10/9 12% precision and 6% recall 
+    print 'precision:',np.average(precision), '+/-', np.std(precision) #as of 10/9 13% precision and 4% recall 
     print 'recall:', np.average(recall), '+/-', np.std(recall)
 
 
@@ -93,12 +89,7 @@ def cross_validate():
 
 
 
-#choose the right classifier and instantiate it
-
-#cross validation using k fold (mitigates overfitting / reduces bias) AND actually do the thing
-
-# calculate precision & recall across k-folds
-
+#### still to do ######
 # Try on one new sample comment
 
 #spot check spammy words
@@ -108,7 +99,3 @@ def cross_validate():
 
 
 
-########
-#more qs -> the big no no of like 'gaming' your training data 
-
-# organize_data()
