@@ -1,0 +1,29 @@
+#weekliesppTable {
+    margin: auto;
+    width: 70%;
+    background-color: white;
+    border-color: rgba(151,187,205,1);
+
+}
+
+#weekliesppTable, th, td {
+    border-bottom: 1px solid #ddd;
+}
+
+#weekliesppTable, th {
+  text-align: left;
+  padding: 10px;
+  color: rgb(72,72,72);
+  ;
+
+}
+
+th {
+    background-color: rgba(151,187,205,1);
+}
+.crt-chart {
+    margin: auto;
+    width: 70%;
+  
+}
+

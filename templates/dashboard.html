@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+
+
 {% block content %}
 <div class="crt-chart">
   <canvas id="dailiesChart"></canvas>
@@ -7,17 +9,18 @@
 </div>
 
 
-<link rel="stylesheet" type="text/css" href="nav.css">
+<link rel="stylesheet" type="text/css" href="/static/dashboard.css">
 <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
 <script src="/static/dashboard.js"></script>
 
-<table class="weekliesppTable">
+<table id="weekliesppTable">
     <tr>
         <th>Week</th>
         <th>Reviewer</th>
         <th>Total Reviews</th>
     </tr>
+
 {% for item in weekliespp %}
     <tr>
         <td>{{ item[0] }}</td>
@@ -28,3 +31,6 @@
 </table>
 
 {% endblock %}
+
+
+
