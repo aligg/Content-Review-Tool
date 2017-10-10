@@ -28,9 +28,9 @@ def get_table1_data():
     labels = []
     data = []
 
-    for item in table1_sql():
-        labels.append(str(item[0])[:10])
-        data.append(int(item[1]))
+    for date, totals in table1_sql():
+        labels.append(str(date)[:10])
+        data.append(int(totals))
 
     data_dict = {
         "labels": labels,
@@ -72,7 +72,7 @@ def table2_sql():
     """
     cursor = db.session.execute(sql)
     datasample = cursor.fetchall()
-
+    
     return datasample
 
 
@@ -80,10 +80,10 @@ def agreement_rate_by_item():
     """Create dictionary of agreement rate per item_id"""
 
     
-    data_dict = {}
+    agreement_rate_data = {}
 
-    for item in table2_sql():
-        labels = str(item[4])
+    for day, item_id, review_count, reviewers, labels in table2_sql():
+        labels = str(labels)
         labels= labels.split(', ')
 
         if len(labels) == 3 and len(set(labels)) == 2:
@@ -93,47 +93,52 @@ def agreement_rate_by_item():
         elif len(set(labels)) == 1:
             agreement_rate = 1
 
-        data_dict[item[1]] = {"last_review": item[0],
-                            "total_reviews": int(item[2]),
-                            "reviewers": item[3],
+        agreement_rate_data[item_id] = {"last_review": day,
+                            "total_reviews": int(review_count),
+                            "reviewers": reviewers,
                             "labels": labels,
                             "agreement_rate": agreement_rate
-                            } #data_dict is now a dictionary w/ data for agreement_rate for each item
+                            } #agreement_rate_data is now a dictionary w/ data for agreement_rate for each item as well as additional information
 
-
-    return data_dict
+    
+    return agreement_rate_data
 
 
 def agreement_rate_maker():
     """Calculate agreement rate daily average and add days and rates and sample size to separate ordered lists"""
     
-    #Get agreement rates for all items w/ multiple reviews by day, where day is date of last review into a dict
+    
     day_and_rates = {}
+
     for item in agreement_rate_by_item().values():
         if item['last_review'].date() not in day_and_rates.keys():
             day_and_rates[item['last_review'].date()] = [item['agreement_rate']]
         else:
             day_and_rates[item['last_review'].date()].append(item['agreement_rate'])
-
+    
+    # for last_review, _, _, _, agreement_rate,  in agreement_rate_by_item().values():
+    # if last_review.date() not in day_and_rates.keys():
+    #     day_and_rates[last_review.date()] = [agreement_rate]
+    # else:
+    #     day_and_rates[last_review.date()].append(agreement_rate) #curious about this restructuring will come back to it
     days = []
     rate = []
     sample = []
     day_and_rates_list = []
 
-    for key, values in day_and_rates.items():
-        day_and_rates_list.append((key, values))
-
-    #switched to using a list so that we can sort days
+    for date, agreement_rates in day_and_rates.items():
+        day_and_rates_list.append((date, agreement_rates))
     day_and_rates_list = sorted(day_and_rates_list)
 
-    for item in day_and_rates_list:
-        days.append(item[0]) #add days to list 
-        sample.append(len(item[1])) #calculate daily sample size & add to list
-        rate.append(numpy.mean(item[1])) #calculate daily avg & add to list
+    print day_and_rates_list
+
+    for date, agreement_rates in day_and_rates_list:
+        days.append(date) #add days to list 
+        sample.append(len(agreement_rates)) #calculate daily sample size & add to list
+        rate.append(numpy.mean(agreement_rates)) #calculate daily avg & add to list
 
     days = [str(day) for day in days] #format date as string for pretty display 
          
-
     return (days, rate, sample)
 
 def get_table2_data():
