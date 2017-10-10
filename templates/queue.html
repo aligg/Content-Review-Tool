@@ -12,11 +12,13 @@
 
 Review Item {{loop.index}} <b>ID:</b> {{comment.link_id}}
 
+{% if "imagemode" in session %}
 <label class="switch">
     <input type="checkbox">
     <span class="slider round">
     </span>
 </label><br>
+{% endif %}
 
 
 {% if "imagemode" not in session %}
