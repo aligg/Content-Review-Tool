@@ -63,7 +63,11 @@ def index():
 
 @app.route('/queue')
 def queue():
-    """Opens the queue and retrieves items for review"""
+    """Opens the queue and retrieves items for review.
+
+    Assures reviewer doesn't review anything they've reviewed previously, that a given item is reviewed 3 times tops, and that images are not surfaced in comments queue and vice versa. 
+
+    """
     
     item_id_list = [a.item_id for a in Action.query.filter(Action.reviewer_id==session["reviewer id"])]
 
@@ -82,7 +86,7 @@ def queue():
     elif "imagemode" in session:
         comments = Item.query.filter(Item.parent=="image",db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all()
     else:
-        comments = Item.query.filter(db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all() #could change this to allow items to be reviewed by other users up to 3 times
+        comments = Item.query.filter(Item.parent == None,db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all() 
 
     badwords_list = [w.word for w in BadWord.query.all()]
     badwords = str(badwords_list)
@@ -255,8 +259,9 @@ def logout():
 def display_dash():
     """renders dashboard"""
     
+    weekliespp = dashboard.get_table3_data()
 
-    return render_template("dashboard.html")
+    return render_template("dashboard.html", weekliespp=weekliespp)
 
 
 @app.route('/dashboard-line-dailies.json')

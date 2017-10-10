@@ -18,6 +18,7 @@ def table1_sql():
     cursor = db.session.execute(sql)
     datasample = cursor.fetchall()
 
+
     return datasample
 
 
@@ -99,7 +100,7 @@ def agreement_rate_by_item():
                             "agreement_rate": agreement_rate
                             } #data_dict is now a dictionary w/ data for agreement_rate for each item
 
-                        
+
     return data_dict
 
 
@@ -167,6 +168,28 @@ def get_table2_data():
 
     return data_dict
 
+def get_table3_data():
+    """queries db and passes clean output to page for a table of reviews per person per week"""
 
+
+    sql = """ select date_trunc('week', time_created), handle, count(action_id)
+                from actions a
+                join reviewers b
+                on a.reviewer_id = b.reviewer_id
+                group by 1,2
+                order by 1 desc, 3 desc;
+    """
+    cursor = db.session.execute(sql)
+    datasample = cursor.fetchall()
+    clean_datasample = []
+
+    for (week, handle, total) in datasample:
+        week= str(week)[:10]
+        handle = str(handle)
+        total = int(total)
+        tup = (week, handle, total)
+        clean_datasample.append(tup)
+
+    return clean_datasample
 
 

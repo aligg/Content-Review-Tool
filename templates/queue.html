@@ -70,7 +70,7 @@ Review Item {{loop.index}} <b>ID:</b> {{comment.link_id}}
     <div id="formobject-{{loop.index}}">
         <input type="hidden" name="item_id-{{loop.index}}" value={{comment.item_id}}>
         <input type="radio" name="label-{{loop.index}}" value="brand_safe" checked>Brand Safe<br>
-        <input type="radio" name="label-{{loop.index}}" value="not_brand_safe">Not Brand Safe<br>
+        <input type="radio" name="label-{{loop.index}}" value="not_brand_safe" class="notsafe">Not Brand Safe<br>
         Notes<input type="text" name="notes-{{loop.index}}" class="notes"><br>
     </div>
     {% endfor %}

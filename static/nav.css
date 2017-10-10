@@ -109,4 +109,22 @@ input:checked + .slider:before {
     width: 65%;
 }
 
+.weekliesppTable {
+    margin: auto;
+    width: 65%;
+}
 
+.weekliesppTable, th {
+  text-align: left;
+  padding: 10px;
+  color: rgb(72,72,72);
+
+}
+
+.weekliesppTable, th, td {
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: rgba(151,187,205,1);
+}
