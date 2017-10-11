@@ -108,36 +108,31 @@ def agreement_rate_maker():
     """Calculate agreement rate daily average and add days and rates and sample size to separate ordered lists"""
     
     
+    days = []
+    rate = []
+    sample = []
+    day_and_rates_list = []
     day_and_rates = {}
 
+    #create dictionary with days and list of agreement rates for all items on that day
     for item in agreement_rate_by_item().values():
         if item['last_review'].date() not in day_and_rates.keys():
             day_and_rates[item['last_review'].date()] = [item['agreement_rate']]
         else:
             day_and_rates[item['last_review'].date()].append(item['agreement_rate'])
     
-    # for last_review, _, _, _, agreement_rate,  in agreement_rate_by_item().values():
-    # if last_review.date() not in day_and_rates.keys():
-    #     day_and_rates[last_review.date()] = [agreement_rate]
-    # else:
-    #     day_and_rates[last_review.date()].append(agreement_rate) #curious about this restructuring will come back to it
-    days = []
-    rate = []
-    sample = []
-    day_and_rates_list = []
-
+    #unpack dictionary and create a list of tuples so we'll have ordering for the chart
     for date, agreement_rates in day_and_rates.items():
         day_and_rates_list.append((date, agreement_rates))
     day_and_rates_list = sorted(day_and_rates_list)
 
-    print day_and_rates_list
-
+    #separate items into 3 lists for the table, & finally calculate sample size & agreement rate for the day
     for date, agreement_rates in day_and_rates_list:
-        days.append(date) #add days to list 
-        sample.append(len(agreement_rates)) #calculate daily sample size & add to list
-        rate.append(numpy.mean(agreement_rates)) #calculate daily avg & add to list
+        days.append(date) 
+        sample.append(len(agreement_rates)) 
+        rate.append(numpy.mean(agreement_rates)) 
 
-    days = [str(day) for day in days] #format date as string for pretty display 
+    days = [str(day) for day in days] 
          
     return (days, rate, sample)
 
@@ -233,6 +228,7 @@ def safety_score_maker():
     safety_information = sorted(safety_information, key=lambda x: x[1])
 
     return safety_information
+
 
 
 

@@ -15,11 +15,8 @@ import classifier
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
                                 deprecated="auto")
-
 app = Flask(__name__)
-
 app.secret_key = "miau"
-
 app.jinja_env.undefined = StrictUndefined
 
 
@@ -283,17 +280,16 @@ def total_agreement_data():
     return jsonify(data_dict)
 
 
-@app.route('/testing-classifier')
+@app.route('/testing')
 def testing():
-    """testing out classifier.py functionality"""
+    """route testing out classifier.py functionality & other things along the way"""
 
-    classifier.organize_data()
-    classifier.make_vectors()
-    classifier.cross_validate()
+    # classifier.organize_data()
+    # classifier.make_vectors()
+    # classifier.cross_validate()
+    dashboard.heuristic_maker()
 
     return "123"
-
-
 
 
 

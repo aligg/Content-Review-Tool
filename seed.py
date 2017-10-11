@@ -1,7 +1,5 @@
-
 import os
 import praw
-
 from sqlalchemy import func
 from model import (Action, Reviewer, Item, BadWord, connect_to_db, db)
 import datetime
@@ -18,11 +16,10 @@ def authorize():
 
 
 def grab_submissions(reddit):
-    
-    """grabs submissions from reddit controversial front page and data associated with them"""
+    """grabs submissions & associated data from reddit front page and add to a dict"""
 
     submissions = {} 
-    for submission in reddit.subreddit('all').top('day', limit=50):#reddit.front.controversial(limit=10):     
+    for submission in reddit.subreddit('all').top('day', limit=50):     
         submission.comment_sort = "new"
         submissions[submission.id] = submission
        
@@ -31,7 +28,7 @@ def grab_submissions(reddit):
 
 
 def grab_images(reddit):
-    """grabs images from pics subreddit and create dictionary"""
+    """grabs images from pics subreddit and add to a dict"""
     
     images={}
     for submission in reddit.subreddit('pics').top('day', limit=50):
@@ -54,9 +51,8 @@ def grab_comments(reddit, s=None):
         s = grab_submissions(reddit)
 
     comments = {}
-    count = 0
    
-    for key, submission in s.items(): #could you do this with a dict comprehension / without all the loops
+    for _, submission in s.items(): #still would like to refactor this to be faster/ with less looping
         submission.comments.replace_more(limit=0)
         num_comments = min(len(submission.comments), 3)
         for comment_num in range(0, num_comments): 
@@ -75,12 +71,13 @@ def grab_comments(reddit, s=None):
                 comments[comment.link_id].update({"parent" : comment.parent().body}) 
             if comment.author is not None:
                 comments[comment.link_id].update({"author" : comment.author.name})
-            # count += 1           
+                    
     return comments
 
 
 def load_items(comments=None):
     """Populate items table with data from Reddit API"""
+
 
     link_id_list = [a.link_id for a in Item.query.all()]
     
@@ -109,6 +106,7 @@ def load_items(comments=None):
 
 def load_images():
     """Populate items table with image data from Reddit API"""
+
 
     link_id_list = [a.link_id for a in Item.query.all()]
 
