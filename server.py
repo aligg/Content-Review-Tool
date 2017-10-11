@@ -260,6 +260,7 @@ def display_dash():
     """renders dashboard"""
     
     weekliespp = dashboard.get_table3_data()
+    safety_information = dashboard.safety_score_maker()
 
     return render_template("dashboard.html", weekliespp=weekliespp)
 
@@ -292,42 +293,7 @@ def testing():
 
     return "123"
 
-@app.route('/testing')
-def testing2():
-    """"testing out sql"""
 
-    # sql = """
-    # select subreddit from
-    #     (select subreddit, label_applied, count(label_applied) as counts
-    #     from actions a
-    #     join items b
-    #     on a.item_id = b.item_id
-    #     where subreddit = 'The_Donald'
-    #     group by 1,2
-    #     order by 1) a
-    # """
-
-    sql = """
-    select subreddit, total_safe/(total_safe+not_safe) as safety_score
-    from
-    (select subreddit, SUM(case when label_applied = 'brand_safe' THEN 1 END) as total_safe, SUM(case when label_applied = 'not_brand_safe' then 1 END) as not_safe
-    from actions a
-    join items b
-    on a.item_id = b.item_id
-    group by 1) a
-    group by 1,2
-    order by 2 desc;
-    """
-
-
-    cursor = db.session.execute(sql)
-    t = cursor.fetchall()
-
-    print t
-    for item in t:
-        print item[1]
-
-    return "running"
 
 
 

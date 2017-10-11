@@ -198,4 +198,42 @@ def get_table3_data():
 
     return clean_datasample
 
+def safety_score_maker():
+    """ Queries the db for safety data across comments per subreddit and creates a safety score"""
+
+    sql = """
+    select subreddit, (total_safe*1.0) as safes, (not_safe*1.0) as not_safes, total_reviews
+    from
+    (select subreddit, count(action_id) as total_reviews, SUM(case when label_applied = 'brand_safe' THEN 1 END) as total_safe, SUM(case when label_applied = 'not_brand_safe' then 1 END) as not_safe
+    from actions a
+    join items b
+    on a.item_id = b.item_id
+    group by 1) a
+    where total_reviews > 20
+    group by 1,2,3,4
+    order by 2 desc;
+    """
+    cursor = db.session.execute(sql)
+    result = cursor.fetchall()
+    
+    safety_score = 0
+    safety_information = []
+
+    for subreddit, safes, not_safes, total in result:
+        if safes == None:
+            safety_score = 0
+        if not_safes == None:
+            safety_score = 100
+        else:
+            safety_score = safes / (safes+not_safes)
+        
+        new = (subreddit, safety_score, total)
+        safety_information.append(new)
+    
+    safety_information = sorted(safety_information, key=lambda x: x[1])
+
+    return safety_information
+
+
+
 

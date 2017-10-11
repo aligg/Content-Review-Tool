@@ -98,6 +98,10 @@ $(document).keypress(function(e) {
         { 
         $('.slider').trigger('click');
         }
+        if(e.which == 116)  //t still not working 
+        { 
+        $('.notsafe').trigger('click');
+        }
         if(e.which == 113)  //q still not working
         { 
         $('.navbutton-home').trigger('click');

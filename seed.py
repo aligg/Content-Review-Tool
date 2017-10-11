@@ -18,6 +18,7 @@ def authorize():
 
 
 def grab_submissions(reddit):
+    
     """grabs submissions from reddit controversial front page and data associated with them"""
 
     submissions = {} 
