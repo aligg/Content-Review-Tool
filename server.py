@@ -97,6 +97,53 @@ def queue():
             else:
                 matches[item.link_id] = word
 
+    link_ids = []
+    for item in comments:
+        link_ids.append(item.link_id)
+
+    link_ids = tuple(link_ids)
+    
+###########################One idea###################################
+    # sql = """ select word 
+    #         from badwords 
+    #         where word in (select body from items where link_id in :link_ids)
+    # """
+    # cursor = db.session.execute(sql,
+    #                             {'link_ids': link_ids}
+    #                             )
+    # output = cursor.fetchall()
+
+###########################Second idea###################################
+    # sql = """select word
+    #         from badwords
+    #         where :comment like '%word%'
+
+    # """
+
+    # cursor = db.session.execute(sql, 
+    #                             {'comment' : 'i am a fuck fuck'}
+    #                             )
+    # output= cursor.fetchall()
+
+###########################Third idea###################################
+    # list_of_comment_bodies = [word.body.lower() for word in comments]
+  
+    # for badword in badwords_list:
+    #     if badword.lower() in list_of_comment_bodies:
+    #         print "Found badword", badword
+    #     else:
+    #         continue
+    # #     for comment in list_of_comment_bodies:
+
+
+    # print "             "
+    # print "Link ID tuple", link_ids
+    # print "             "
+    # print "Output", output
+    # print "       "
+    
+
+
     #what I really want to do is check if any term in badwords can be found anywhere in comment body.
     #currently what I am doing is checking if any word in the comment can be found in a list of badwords
     #problems: // job triggers off of blow job // fuck. does not trigger off of fuck //^I ^am ^a ^bot will not find itself // not picking up if multiple badwords in string 
@@ -222,6 +269,7 @@ def login_form():
 
     return render_template("login_form.html")
 
+
 @app.route('/login-handler', methods=["POST"])
 def login_handler():
     """Handles login form inputs, if valid credentials logs user in and redirects home"""
@@ -246,6 +294,7 @@ def login_handler():
 
     return redirect("/")
 
+
 @app.route('/logout')
 def logout():
     """logs reviewer out & removes id from session"""
@@ -255,6 +304,7 @@ def logout():
     flash("You are now logged out")
     
     return redirect("/")
+
 
 @app.route('/dashboard')
 def display_dash():
