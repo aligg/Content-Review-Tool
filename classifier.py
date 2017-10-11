@@ -94,19 +94,3 @@ def cross_validate():
 
     # sorted(zip(probs,features), reverse=True [:50])
 
-
-
-
-
-
-
-#### still to do ######
-# Try on one new sample comment
-
-#spot check spammy words
-
-#run classifier on each new comment for review 
-
-
-
-
