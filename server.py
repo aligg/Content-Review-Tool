@@ -97,6 +97,10 @@ def queue():
             else:
                 matches[item.link_id] = word
 
+    #what I really want to do is check if any term in badwords can be found anywhere in comment body.
+    #currently what I am doing is checking if any word in the comment can be found in a list of badwords
+    #problems: // job triggers off of blow job // fuck. does not trigger off of fuck //^I ^am ^a ^bot will not find itself // not picking up if multiple badwords in string 
+    #I want to be able to find multiple badwords as well. 
 
 
     return render_template("queue.html", 
