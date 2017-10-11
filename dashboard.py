@@ -184,6 +184,7 @@ def get_table3_data():
                 group by 1,2
                 order by 1 desc, 3 desc;
     """
+    
     cursor = db.session.execute(sql)
     datasample = cursor.fetchall()
     clean_datasample = []

@@ -59,8 +59,10 @@ def make_vectors():
 def cross_validate():
     """ instantiate the classifier and cross-validate """
 
+
     X = make_vectors()[0]
-    Y = make_vectors() [1]
+    Y = make_vectors()[1]
+
 
     classifier = BernoulliNB() #instantiate classifier
 
@@ -82,6 +84,15 @@ def cross_validate():
 
     print 'precision:',np.average(precision), '+/-', np.std(precision) #as of 10/9 13% precision and 4% recall 
     print 'recall:', np.average(recall), '+/-', np.std(recall)
+
+
+    # probs= classifier.feature_log_prob_[1] - classifier.feature_log_prob_[0]
+    # print len(probs)
+
+    # features=vectorizer.get_feature_names()
+    # print len(features) #as of now can only look at this 
+
+    # sorted(zip(probs,features), reverse=True [:50])
 
 
 

@@ -104,10 +104,5 @@ input:checked + .slider:before {
     filter: blur(6px);
 }
 
-.crt-chart {
-    margin: auto;
-    width: 65%;
-}
-
 
 
