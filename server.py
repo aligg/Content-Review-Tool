@@ -299,6 +299,15 @@ def total_agreement_data():
     
     return jsonify(data_dict)
 
+@app.route('/insights-dashboard')
+def display_insights_dash():
+    """renders dashboard"""
+    
+    safety_information = dashboard.safety_score_maker()
+
+    return render_template("insights_dashboard.html", 
+                            safety_information=safety_information)
+
 
 @app.route('/testing')
 def testing():
