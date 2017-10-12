@@ -4,29 +4,37 @@
 
 
 
-<form action="/picker-handler", method="POST">
-    Subreddit: <input type="text" name="subreddit" required><button type="button" onclick="alert({{surprise}})">Inspire me</button><br> 
+
+<div id="subreddit-area">
+    {% for item in surprise %}
+        {{ item }}<br>
+    {% endfor %}
+</div>
+
+<div id="status-area">
+    API kittens fetching as fast as they can! Thanks for waiting.<br>
+    <img src="static/images/treadmill.gif">
+</div>
+
+<form id="pickerhandler" action="/picker-handler", method="POST">
+    Subreddit: <input type="text" name="subreddit" required> <button type="button" id="inspire">Inspire me</button><br>
     Sort: <select name="sort">
-            <option value="hot">Hot</option>
             <option value="new">New</option>
-            <option value="rising">Rising</option>
             <option value="controversial">Controversial</option>
             <option value="top">Top</option>
-            <option value="gilded">Gilded</option>
+
         </select><br>
     Time: <select name="time">
-            <option value="hour">Hour</option>
             <option value="day">Day</option>
             <option value="week">Week</option>
             <option value="month">Month</option>
-            <option value="year">Year</option>
         </select><br>
 
     <input type="submit" value="Go" id="gogo">
 </form>
 
-<div id="status-area">
-</div>
+
+
 
 <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="/static/js/picker.js"></script>

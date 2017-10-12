@@ -1,12 +1,26 @@
 function displayMessage() {
-    $('#status-area').flash_message({
-        text: 'We\'re going as fast as we can!',
-        how: 'append'
-    });
+    
+    $('#status-area').show();
+    $('#pickerhandler').hide();
+ 
+ }
+
+function displaySubreddits() {
+        
+        $('#subreddit-area').show().delay(7000).fadeOut();
+    
+
 }
 
 
-$('#gogo').click(displayMessage);
 
-//still need to work on this, not functional
+//event listeners
+$('#subreddit-area').hide()
+$('#status-area').hide()
+$('#gogo').on('click', displayMessage);
+$('#inspire').on('click', displaySubreddits);
+
+
+
+
 

@@ -20,7 +20,7 @@ for (var i = 2; i<=5; i++){
 function checkBatchSize(){
     if (batchsize == 0) 
     {
-    alert("You've booted the queue! Redirecting home.");
+    alert("No items for review! Redirecting home.");
     window.location.href = "/"
     }
 }
