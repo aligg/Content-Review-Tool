@@ -85,24 +85,37 @@ def queue():
     else:
         comments = Item.query.filter(Item.parent == None,db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all() 
 
-    badwords_list = [w.word for w in BadWord.query.all()]
-    badwords = str(badwords_list)
+    badwords_list = [w.word for w in BadWord.query.filter(BadWord.language == 'en')]
+    # badwords = str(badwords_list)
     matches = {}
     
-    for item in comments:
-        for word in item.body.split():
-            r = re.search(r"(?:^|\W)" + re.escape(word) + r"(?:$|\W)", badwords, re.IGNORECASE)   
-            if r is None or len(word) < 3:
-                continue
-            else:
-                matches[item.link_id] = word
+    # for item in comments:
+    #     for word in item.body.split():
+    #         r = re.findall(r"(?:^|\W)" + re.escape(word) + r"(?:$|\W)", badwords, re.IGNORECASE)   
+    #         if r is None or len(word) < 3:
+    #             continue
+    #         else:
+                
+    #             matches[item.link_id] = word
 
-    link_ids = []
-    for item in comments:
-        link_ids.append(item.link_id)
+    # link_ids = []
+    # for item in comments:
+    #     link_ids.append(item.link_id)
 
-    link_ids = tuple(link_ids)
+    # link_ids = tuple(link_ids)
+
+###########################Fourth idea###################################
+    #Making a | separated list of all badwords
+    badwords_pattern = r'\b(' + '|'.join(badwords_list) + r')\b'
     
+    #trying to match 
+    list_of_comment_bodies = [word.body.lower() for word in comments]
+    for item in comments:
+        res = re.findall(badwords_pattern, item.body.lower(), re.IGNORECASE)
+        if len(res) > 0:
+            matches[item.link_id] = ','.join(res)
+
+
 ###########################One idea###################################
     # sql = """ select word 
     #         from badwords 
