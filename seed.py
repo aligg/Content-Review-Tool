@@ -134,7 +134,7 @@ def load_images():
 def load_words():
     """Populate base data from badwords db"""
 
-    for row in open("seeddata"):
+    for row in open("seeddata/badwords"):
         row = row.rstrip()
         word_id, word, language = row.split(",")
 

@@ -11,6 +11,7 @@ import re
 import dashboard
 import numpy
 import classifier
+import random
 
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
@@ -85,83 +86,19 @@ def queue():
     else:
         comments = Item.query.filter(Item.parent == None,db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all() 
 
+    #Selecting badwords from db, limiting due to regex throwing errors with non latin characters
     badwords_list = [w.word for w in BadWord.query.filter(BadWord.language == 'en')]
-    # badwords = str(badwords_list)
     matches = {}
-    
-    # for item in comments:
-    #     for word in item.body.split():
-    #         r = re.findall(r"(?:^|\W)" + re.escape(word) + r"(?:$|\W)", badwords, re.IGNORECASE)   
-    #         if r is None or len(word) < 3:
-    #             continue
-    #         else:
-                
-    #             matches[item.link_id] = word
 
-    # link_ids = []
-    # for item in comments:
-    #     link_ids.append(item.link_id)
-
-    # link_ids = tuple(link_ids)
-
-###########################Fourth idea###################################
-    #Making a | separated list of all badwords
+    #Make a string of badwords separated by pipes -> need to check why we have the \b here
     badwords_pattern = r'\b(' + '|'.join(badwords_list) + r')\b'
-    
-    #trying to match 
     list_of_comment_bodies = [word.body.lower() for word in comments]
+
+    #Go through all the badwords and look for them in the comment bodies
     for item in comments:
         res = re.findall(badwords_pattern, item.body.lower(), re.IGNORECASE)
         if len(res) > 0:
             matches[item.link_id] = ','.join(res)
-
-
-###########################One idea###################################
-    # sql = """ select word 
-    #         from badwords 
-    #         where word in (select body from items where link_id in :link_ids)
-    # """
-    # cursor = db.session.execute(sql,
-    #                             {'link_ids': link_ids}
-    #                             )
-    # output = cursor.fetchall()
-
-###########################Second idea###################################
-    # sql = """select word
-    #         from badwords
-    #         where :comment like '%word%'
-
-    # """
-
-    # cursor = db.session.execute(sql, 
-    #                             {'comment' : 'i am a fuck fuck'}
-    #                             )
-    # output= cursor.fetchall()
-
-###########################Third idea###################################
-    # list_of_comment_bodies = [word.body.lower() for word in comments]
-  
-    # for badword in badwords_list:
-    #     if badword.lower() in list_of_comment_bodies:
-    #         print "Found badword", badword
-    #     else:
-    #         continue
-    # #     for comment in list_of_comment_bodies:
-
-
-    # print "             "
-    # print "Link ID tuple", link_ids
-    # print "             "
-    # print "Output", output
-    # print "       "
-    
-
-
-    #what I really want to do is check if any term in badwords can be found anywhere in comment body.
-    #currently what I am doing is checking if any word in the comment can be found in a list of badwords
-    #problems: // job triggers off of blow job // fuck. does not trigger off of fuck //^I ^am ^a ^bot will not find itself // not picking up if multiple badwords in string 
-    #I want to be able to find multiple badwords as well. 
-
 
     return render_template("queue.html", 
                             comments=comments,
@@ -179,9 +116,26 @@ def image_queue():
 
 @app.route('/picker')
 def display_picker():
-    """Displays form for reviewer to specify review parameters"""
-    
-    return render_template("picker.html")
+    """Displays form for reviewer to specify review parameters
+
+    Cleans up a file containing subreddits w/ subs over 50k
+
+    Passes 10 random subreddit ideas to the template
+
+    """
+
+    nicerow = ""
+    subreddits = []
+    for row in open("static/subreddits"):
+        row = row.rstrip()
+        if row != "" and row[0] not in ('#', "-", "*") and len(row.split()) == 1:
+            nicerow = row
+            subreddits.append(nicerow)
+    surprise = random.sample(grab_subreddits(), 10)
+
+
+    return render_template("picker.html", 
+                            surprise=surprise)
 
 
 @app.route('/picker-handler', methods=["POST"])
@@ -354,7 +308,8 @@ def testing():
     # classifier.organize_data()
     # classifier.make_vectors()
     # classifier.cross_validate()
-    dashboard.heuristic_maker()
+    # dashboard.heuristic_maker()
+
 
     return "123"
 
