@@ -107,6 +107,14 @@ def example_data():
                 author="redditor", submission="subtest", subreddit="news",
                 permalink="/r/news/comments/73xmht/officials_us_to_ask_cuba_to_cut_embassy_staff_by/dntxqkk", 
                 controversiality=0, upvotes=1, downvotes=0, parent=None)
+    item2 = Item(item_id=2, link_id="234", body="I LOVE TO POST ON REDDIT", 
+                author="redditor", submission="subtest", subreddit="news",
+                permalink="/r/news/comments/73xmht/officials_us_to_ask_cuba_to_cut_embassy_staff_by/dntxqkk", 
+                controversiality=0, upvotes=1, downvotes=0, parent=None)
+    item3 = Item(item_id=3, link_id="345", body="I LOVE TO POST ON REDDIT", 
+                author="redditor", submission="subtest", subreddit="news",
+                permalink="/r/news/comments/73xmht/officials_us_to_ask_cuba_to_cut_embassy_staff_by/dntxqkk", 
+                controversiality=0, upvotes=1, downvotes=0, parent=None)
     image = Item(item_id=556, link_id="72xep5", body="https://i.redd.it/lqoz1uf6ijoz.jpg", 
                 author="Smuggling_Plumz", submission = "Jabba the Trump", subreddit= "pics",
                 permalink="/r/pics/comments/72xep5/jabba_the_trump/",
@@ -114,7 +122,7 @@ def example_data():
 
     action = Action(action_id=1, item_id=1, reviewer_id=1, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
     
-    db.session.add_all([reviewer, rev2, item, action, image])
+    db.session.add_all([reviewer, rev2, item, item2, item3, action, image])
     db.session.commit()
 
 def connect_to_db(app, db_uri="postgresql:///crt"):

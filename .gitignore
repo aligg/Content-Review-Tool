@@ -6,3 +6,4 @@ seeddatatest
 testing.py
 .coverage
 ipyn/
+htmlcov/

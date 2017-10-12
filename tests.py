@@ -1,4 +1,5 @@
-"""Tests for Flask App"""
+"""Tests for CRT"""
+
 import unittest
 import server
 from model import (connect_to_db, db, example_data)
@@ -12,14 +13,12 @@ class LoggedInServerTests(unittest.TestCase):
         server.app.config['TESTING'] = True
         server.app.config['SECRET_KEY'] = 'miau'
         self.client = server.app.test_client()
-
         with self.client as c:
             with c.session_transaction() as sess:
                 sess['reviewer id'] = 1
                 sess['handle'] = 'alig'
         
         connect_to_db(server.app, "postgresql:///testdb")
-
         db.create_all()
         example_data()
 
@@ -113,6 +112,34 @@ class LoggedInServerTests(unittest.TestCase):
         result=self.client.get("/logout", follow_redirects=True) 
         self.assertIn("You are now logged out", result.data)
 
+    def test_display_training(self):
+        """Does the training page render?"""
+
+        result=self.client.get("/training")
+        self.assertIn("Hot Keys", result.data)
+
+    def test_display_dash(self):
+        """Does the operations dashboard page render?"""
+
+        result=self.client.get("/dashboard")
+        self.assertIn("Total Reviews", result.data)
+        self.assertIn("crt-chart", result.data)
+
+    def test_total_agreement_data(self):
+        """Does the json passed to the agreement table on dashboard make it? """
+
+        result=self.client.get("/dashboard-line-agreement.json")
+        self.assertIn("datasets", result.data)
+        self.assertIn("labels", result.data)
+
+
+    def test_total_dailies_data(self):
+        """Does the json passed to the daily reviews table on dashboard make it? """
+
+        result=self.client.get("/dashboard-line-dailies.json")
+        self.assertIn("datasets", result.data)
+        self.assertIn("Daily Agreement Rate", result.data)
+
 
 class LoggedOutServerTests(unittest.TestCase):
     """Tests for logged out CRT"""
@@ -133,6 +160,35 @@ class LoggedOutServerTests(unittest.TestCase):
         result = self.client.get("/")
         self.assertIn("welcomes you", result.data)
         self.assertNotIn("Comments Queue", result.data)
+
+
+    def test_login_handler(self):
+        """Does the login handler work properly for an existing user who enters proper credentials?"""
+
+        login_data = {"handle": "alig", "password": "password"}
+        result = self.client.post("/login-handler", data=login_data, follow_redirects=True)
+        self.assertIn("You are logged in", result.data)
+        self.assertIn("alig", result.data)
+        self.assertNotIn("Incorrect credentials", result.data)
+
+
+    def test_login_handler_bad_credentials(self):
+        """Does the login handler work properly for an existing user who enters poor credentials?"""
+
+        login_data = {"handle": "alig", "password": "wordpass"}
+        result = self.client.post("/login-handler", data=login_data, follow_redirects=True)
+        self.assertNotIn("You are logged in", result.data)
+        self.assertNotIn("alig", result.data)
+        self.assertIn("Incorrect credentials", result.data)
+
+
+    def test_login_handler_no_reviewer(self):
+        """Does the login handler work properly for a user who does not exist yet?"""
+
+        login_data = {"handle": "purplerain", "password": "wordpass"}
+        result = self.client.post("/login-handler", data=login_data, follow_redirects=True)
+        self.assertNotIn("You are logged in", result.data)
+        self.assertIn("Reviewer by that handle does not exist.", result.data)
 
 
 if __name__ == "__main__":
