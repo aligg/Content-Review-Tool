@@ -3,6 +3,10 @@
 import unittest
 import server
 from model import (connect_to_db, db, example_data)
+import datetime
+
+
+
 
 class LoggedInServerTests(unittest.TestCase):
     """Tests for logged in CRT """
@@ -22,15 +26,13 @@ class LoggedInServerTests(unittest.TestCase):
         db.create_all()
         example_data()
 
-
-        def _mock_picker_handler():
-            """creates mock picker handler to avoid doing real api calls during testing"""
-        
-            comments="[<Item item_id=556 link_id=72xep5>]"
-
-            return comments
-
-        server.picker_handler = _mock_picker_handler
+########still can't get this test to work######
+    # def _mock_picker_handler():
+    #     """creates mock picker handler to avoid doing real api calls during testing"""
+    
+    #     comments="[<Item item_id=556 link_id=72xep5>]"
+    #     return comments
+    # server.picker_handler = _mock_picker_handler
 
 
     def tearDown(self):
@@ -69,8 +71,8 @@ class LoggedInServerTests(unittest.TestCase):
         result=self.client.get("/picker")
         self.assertIn("Subreddit", result.data)
 
-##why does this still query the api live?!?!
-    # def test_pickerhandler(self):
+#why does this still query the api live?!?!
+    # def test_picker_handler(self):
     #     """Does the picker handler route work & redirect to the queue with proper contents displayed?"""
 
     #     picker_info = {"subreddit" : "news", "sort" : "top", "time" : "day"}
@@ -80,6 +82,18 @@ class LoggedInServerTests(unittest.TestCase):
     #                             follow_redirects=True)
 
     #     self.assertIn("news", result.data)
+
+##### submit test returning integrity errors ####
+    # def test_submit(self):
+    #     """Does the queue submit work?"""
+        
+
+    #     submit_data = {"item_id": "5678", "reviewer_id" : "1", "time_created": "datetime.datetime.utcnow()", "label_applied": "brand_safe", "notes": "TEST", "batchsize" : '1' }
+        
+    #     result = self.client.post("/submit", data=submit_data, follow_redirects=True)
+
+    #     self.assertIn("Review Item", result.data)
+
 
     def test_reg(self):
         """Does the registration page load properly?"""
@@ -130,7 +144,7 @@ class LoggedInServerTests(unittest.TestCase):
 
         result=self.client.get("/dashboard-line-agreement.json")
         self.assertIn("datasets", result.data)
-        self.assertIn("labels", result.data)
+        self.assertIn("Daily Agreement Rate", result.data)
 
 
     def test_total_dailies_data(self):
@@ -138,7 +152,7 @@ class LoggedInServerTests(unittest.TestCase):
 
         result=self.client.get("/dashboard-line-dailies.json")
         self.assertIn("datasets", result.data)
-        self.assertIn("Daily Agreement Rate", result.data)
+        self.assertIn("labels", result.data)
 
 
 class LoggedOutServerTests(unittest.TestCase):
