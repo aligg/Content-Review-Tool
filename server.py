@@ -62,23 +62,24 @@ def index():
 @app.route('/queue')
 def queue():
     """Opens the queue and retrieves items for review.
-
-    Assures reviewer doesn't review anything they've reviewed previously, that a given item is reviewed 3 times tops, and that images are not surfaced in comments queue and vice versa. 
-
+    Assures reviewer doesn't review anything they've reviewed previously,
+    that a given item is reviewed 3 times tops,
+    and that images are not surfaced in comments queue and vice versa. 
     """
     
+    #Create a list of items reviewed by this reviewer previously - these are not fair game
     item_id_list = [a.item_id for a in Action.query.filter(Action.reviewer_id==session["reviewer id"])]
 
+    #Create a list of items reviewed less than four times- these are fair game
     less_than_4 = []
     sql = """   select item_id from (select item_id, count(item_id) as count from actions group by 1 having count(item_id) = 3) as a;"""
     cursor = db.session.execute(sql)
     s = cursor.fetchall()
-
     for i in range(len(s)):
         numb= int(s[i][0])
         less_than_4.append(numb)
 
-    
+    #Once you're in the queue, display the correct content for the route the reviewer came from
     if "pickermode" in session:
         comments = Item.query.filter(Item.subreddit==session["pickermode"],db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all()
     elif "imagemode" in session:
