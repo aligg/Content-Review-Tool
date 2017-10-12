@@ -2,8 +2,10 @@
 
 {% block content %}
 
+
+
 <form action="/picker-handler", method="POST">
-    Subreddit: <input type="text" name="subreddit" required><br>
+    Subreddit: <input type="text" name="subreddit" required><button type="button" onclick="alert({{surprise}})">Inspire me</button><br> 
     Sort: <select name="sort">
             <option value="hot">Hot</option>
             <option value="new">New</option>

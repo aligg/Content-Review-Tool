@@ -90,9 +90,10 @@ def queue():
     badwords_list = [w.word for w in BadWord.query.filter(BadWord.language == 'en')]
     matches = {}
 
-    #Make a string of badwords separated by pipes -> need to check why we have the \b here
+    #Make a string of badwords separated by pipes adding \b around to indicate whole word checking
     badwords_pattern = r'\b(' + '|'.join(badwords_list) + r')\b'
     list_of_comment_bodies = [word.body.lower() for word in comments]
+    print badwords_pattern
 
     #Go through all the badwords and look for them in the comment bodies
     for item in comments:
@@ -117,21 +118,18 @@ def image_queue():
 @app.route('/picker')
 def display_picker():
     """Displays form for reviewer to specify review parameters
-
     Cleans up a file containing subreddits w/ subs over 50k
-
     Passes 10 random subreddit ideas to the template
-
     """
 
     nicerow = ""
     subreddits = []
-    for row in open("static/subreddits"):
+    for row in open("seeddata/subreddits"):
         row = row.rstrip()
         if row != "" and row[0] not in ('#', "-", "*") and len(row.split()) == 1:
             nicerow = row
             subreddits.append(nicerow)
-    surprise = random.sample(grab_subreddits(), 10)
+    surprise = random.sample(subreddits, 10)
 
 
     return render_template("picker.html", 
