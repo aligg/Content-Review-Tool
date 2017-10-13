@@ -82,7 +82,7 @@ def cross_validate():
         precision.append(p[1])
         recall.append(r[1])
 
-    print 'precision:',np.average(precision), '+/-', np.std(precision) #as of 10/9 13% precision and 4% recall 
+    print 'precision:',np.average(precision), '+/-', np.std(precision) #as of 10/9 13% precision and 4% recall #as of 10/12 28% precision 11% recall 
     print 'recall:', np.average(recall), '+/-', np.std(recall)
 
 

@@ -4,6 +4,7 @@ var currentReview = 1;
 var amIBlurred = false;
 
 
+
 //hide review objects 2-5
 for (var i = 2; i<=5; i++){ 
     $('#reviewobject-'+i).hide();
@@ -33,7 +34,7 @@ function toggleBlur()
 
 //iterate through objects and hide previous display next one
 function displayNextReview() {
-    checkBatchSize()
+    // checkBatchSize()
     if (currentReview < batchsize)
     {
         $('#reviewobject-'+currentReview).hide();
@@ -55,7 +56,7 @@ function displayNextReview() {
 
 //Same as displayNext but allows for prior button
 function displayPriorReview() {
-    checkBatchSize()
+    // checkBatchSize()
     if (currentReview > 1)  
     {   
         $('.back').show()

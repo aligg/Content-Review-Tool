@@ -13,20 +13,22 @@
 
 <div id="status-area">
     API kittens fetching as fast as they can! Thanks for waiting.<br>
-    <img src="static/images/treadmill.gif">
+    <img src="static/images/treadmill.gif"><br>
+    If they don't find anything, please try again!
 </div>
 
 <form id="pickerhandler" action="/picker-handler", method="POST">
     Subreddit: <input type="text" name="subreddit" required> <button type="button" id="inspire">Inspire me</button><br>
     Sort: <select name="sort">
+            <option value="top">Top</option>
             <option value="new">New</option>
             <option value="controversial">Controversial</option>
-            <option value="top">Top</option>
+            
 
         </select><br>
     Time: <select name="time">
-            <option value="day">Day</option>
             <option value="week">Week</option>
+            <option value="day">Day</option>
             <option value="month">Month</option>
         </select><br>
 

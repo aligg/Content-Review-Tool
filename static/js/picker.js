@@ -1,15 +1,15 @@
 function displayMessage() {
-    
+
     $('#status-area').show();
     $('#pickerhandler').hide();
+    $('#subreddit-area').hide();
  
  }
 
 function displaySubreddits() {
         
-        $('#subreddit-area').show().delay(7000).fadeOut();
+        $('#subreddit-area').show();
     
-
 }
 
 

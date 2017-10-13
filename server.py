@@ -6,6 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import (connect_to_db, db, Item, Reviewer, Action, BadWord)
 from datetime import (datetime, date)
 from passlib.context import CryptContext
+from sqlalchemy import func
 import seed
 import re
 import dashboard
@@ -54,7 +55,6 @@ def index():
 
     session.pop("pickermode", None)
     session.pop("imagemode", None)
-    print session
 
     return render_template("homepage.html")
 
@@ -81,7 +81,7 @@ def queue():
 
     #Once you're in the queue, display the correct content for the route the reviewer came from
     if "pickermode" in session:
-        comments = Item.query.filter(Item.subreddit==session["pickermode"],db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all()
+        comments = Item.query.filter(func.lower(Item.subreddit)==session["pickermode"].lower(),db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all()
     elif "imagemode" in session:
         comments = Item.query.filter(Item.parent=="image",db.not_(Item.item_id.in_(item_id_list)),db.not_(Item.item_id.in_(less_than_4))).limit(5).all()
     else:
@@ -94,7 +94,6 @@ def queue():
     #Make a string of badwords separated by pipes adding \b around to indicate whole word checking
     badwords_pattern = r'\b(' + '|'.join(badwords_list) + r')\b'
     list_of_comment_bodies = [word.body.lower() for word in comments]
-    print badwords_pattern
 
     #Go through all the badwords and look for them in the comment bodies
     for item in comments:
@@ -139,7 +138,8 @@ def display_picker():
 
 @app.route('/picker-handler', methods=["POST"])
 def picker_handler():
-    """Handles input from picker form, queries reddit API, adds to items db, redirects to queue"""
+    """Handles input from picker form, queries reddit API, adds to items db, 
+    redirects to queue, if subreddit queried does not exists, passes empty list"""
 
     subreddit = request.form.get("subreddit")
     sortby = request.form.get("sort")
@@ -148,14 +148,21 @@ def picker_handler():
     reddit = seed.authorize()
 
     submissions = {}   
-    #use if statements for the top one
-    for submission in reddit.subreddit(subreddit).top(timeframe, limit=50):
-        submission.comment_sort = "new"
-        submissions[submission.id] = submission
-       
-    comments = seed.grab_comments(reddit, submissions)
-    seed.load_items(comments)
+    comments = []
 
+    try:
+        subs = reddit.subreddit(subreddit).top(timeframe, limit=25)
+        for submission in subs:
+            submission.comment_sort = "new"
+            submissions[submission.id] = submission
+        comments = seed.grab_comments(reddit, submissions)
+        seed.load_items(comments)
+    
+    except:
+        subs = []
+
+    # if comments == []:
+    #     #do something
     return redirect("/queue")
 
 
@@ -313,9 +320,9 @@ def display_insights_dash():
 def testing():
     """route testing out classifier.py functionality & other things along the way"""
 
-    # classifier.organize_data()
-    # classifier.make_vectors()
-    # classifier.cross_validate()
+    classifier.organize_data()
+    classifier.make_vectors()
+    classifier.cross_validate()
     # dashboard.heuristic_maker()
 
 

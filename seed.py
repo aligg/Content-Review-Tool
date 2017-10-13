@@ -19,7 +19,7 @@ def grab_submissions(reddit):
     """grabs submissions & associated data from reddit front page and add to a dict"""
 
     submissions = {} 
-    for submission in reddit.subreddit('all').top('day', limit=50):     
+    for submission in reddit.subreddit('all').top('week', limit=30):     
         submission.comment_sort = "new"
         submissions[submission.id] = submission
        
@@ -31,7 +31,7 @@ def grab_images(reddit):
     """grabs images from pics subreddit and add to a dict"""
     
     images={}
-    for submission in reddit.subreddit('pics').top('day', limit=50):
+    for submission in reddit.subreddit('pics').top('day', limit=30):
         s=submission
         images[s.id] = {"body" : s.url,
                     "subreddit" : s.subreddit.display_name,
