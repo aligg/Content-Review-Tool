@@ -26,13 +26,13 @@ class LoggedInServerTests(unittest.TestCase):
         db.create_all()
         example_data()
 
-########still can't get this test to work######
-    # def _mock_picker_handler():
-    #     """creates mock picker handler to avoid doing real api calls during testing"""
+        def _mock_picker_handler_api_helper():
+            """creates mock picker handler helper to avoid doing real api calls during testing"""
     
-    #     comments="[<Item item_id=556 link_id=72xep5>]"
-    #     return comments
-    # server.picker_handler = _mock_picker_handler
+            comments="[<Item item_id=3 link_id=345>]"
+            return comments
+
+        server.picker_handler_api_helper = _mock_picker_handler_api_helper
 
 
     def tearDown(self):
@@ -72,16 +72,17 @@ class LoggedInServerTests(unittest.TestCase):
         self.assertIn("Subreddit", result.data)
 
 #why does this still query the api live?!?!
-    # def test_picker_handler(self):
-    #     """Does the picker handler route work & redirect to the queue with proper contents displayed?"""
+    def test_picker_handler(self):
+        """Does the picker handler route work & redirect to the queue with proper contents displayed?"""
 
-    #     picker_info = {"subreddit" : "news", "sort" : "top", "time" : "day"}
+        picker_info = {"subreddit" : "news", "sort" : "top", "time" : "day"}
 
-    #     result=self.client.post("/picker-handler", 
-    #                             data=picker_info,
-    #                             follow_redirects=True)
+        result=self.client.post("/picker-handler", 
+                                data=picker_info,
+                                follow_redirects=True)
 
-    #     self.assertIn("news", result.data)
+        self.assertIn("news", result.data)
+        self.assertIn("POST ON REDDIT", result.data)
 
 ##### submit test returning integrity errors ####
     # def test_submit(self):

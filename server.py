@@ -135,27 +135,35 @@ def display_picker():
     return render_template("picker.html", 
                             surprise=surprise)
 
-
-@app.route('/picker-handler', methods=["POST"])
-def picker_handler():
-    """Handles input from picker form, queries reddit API, adds to items db, 
-    redirects to queue, if subreddit queried does not exists, passes empty list"""
+def picker_handler_api_helper():
+    """live API calls here"""
 
     subreddit = request.form.get("subreddit")
     sortby = request.form.get("sort")
     timeframe = request.form.get("time")
     session["pickermode"] = subreddit
     reddit = seed.authorize()
-
     submissions = {}   
     comments = []
 
+    subs = reddit.subreddit(subreddit).top(timeframe, limit=25)
+    for submission in subs:
+        submission.comment_sort = "new"
+        submissions[submission.id] = submission
+    
+    comments = seed.grab_comments(reddit, submissions)
+
+    return comments
+
+
+
+@app.route('/picker-handler', methods=["POST"])
+def picker_handler():
+    """Handles input from picker form, queries reddit API, adds to items db, 
+    redirects to queue, if subreddit queried does not exists, passes empty list"""
+
     try:
-        subs = reddit.subreddit(subreddit).top(timeframe, limit=25)
-        for submission in subs:
-            submission.comment_sort = "new"
-            submissions[submission.id] = submission
-        comments = seed.grab_comments(reddit, submissions)
+        comments = picker_handler_api_helper()
         seed.load_items(comments)
     
     except:
