@@ -1,13 +1,8 @@
-"""Helper functions to provide proper data to the /dashboard"""
+"""Helper functions to provide proper data to dashboards"""
 
 from model import (connect_to_db, db, Item, Reviewer, Action, BadWord)
-from datetime import (datetime, date, timedelta)
-import time
+from datetime import (datetime, date)
 import numpy
-import praw
-import os
-import re
-
 
 def table1_sql():
     """Grabs data for first table"""
@@ -234,80 +229,7 @@ def safety_score_maker():
     return safety_information
 
 
-def heuristic_maker(item_id):
-    """Grabs signals about a given comment and outputs a guess as to safe or not safe"""
-    
 
-    ####auth-- let's restructure this later
-    reddit = praw.Reddit(client_id=os.environ['CLIENT_ID'],
-        client_secret=os.environ['CLIENT_SECRET'],
-        user_agent=os.environ['USER_AGENT'])
-   
-    #### variables ####
-    curr_item_id = item_id
-    sql = """select subreddit, author, body from items where item_id = :item_id"""
-    cursor = db.session.execute(sql, {'item_id': curr_item_id})
-    comment_data = cursor.fetchall()
-
-    
-    sub_nsfw = None
-    account_age = 0
-    curr_subreddit = comment_data[0][0]
-    author = comment_data[0][1]
-    comment_body = comment_data[0][2]
-    badword_count = 0
-    badwords = None
-    author_comment_karma = 0
-    subreddit_safety_score = None
-
-
-    ####Is the subreddit nsfw####
-    s = reddit.subreddit(curr_subreddit)
-    if s.over18:
-        sub_nsfw = True
-    elif s.over18 is False:
-        sub_nsfw = False
-    else: 
-        sub_nsfw = None
-
-    ####Is author's account new?####
-    u = reddit.redditor(author)
-    account_age_days = (time.time() - u.created_utc)/60/60/24
-
-    ####What is the author's comment karma?###
-    author_comment_karma = u.comment_karma
-
-    ####Does comment contain badwords & how many?####
-    badwords_list = [w.word for w in BadWord.query.filter(BadWord.language == 'en')]
-    matches = {}
-    badwords_pattern = r'\b(' + '|'.join(badwords_list) + r')\b'
-    res = re.findall(badwords_pattern, comment_body.lower(), re.IGNORECASE)
-    if len(res) > 0:
-        matches[curr_item_id] = ', '.join(res)
-    badword_count = len(matches)
-    badwords = matches
-
-
-    ####What is the subreddit safety score
-    safety_information = safety_score_maker()
-    for item in safety_information:
-        if curr_subreddit in item:
-            subreddit_safety_score = item[1]
-            break
-        else: 
-            subreddit_safety_score = None 
-
-
-    ####Does classifier think safe or not safe
-
-
-    print "Subreddit", curr_subreddit
-    print "Author", author
-    print "NSFW?", sub_nsfw
-    print "Account Age", account_age_days
-    print "MATCHES", matches, len(matches)
-    print "KARMA", author_comment_karma
-    print "subreddit_safety_score", subreddit_safety_score
     
 
 

@@ -1,13 +1,19 @@
-from model import (connect_to_db, db)
-from dashboard import agreement_rate_by_item
+from model import (connect_to_db, db, Item, Reviewer, Action, BadWord)
+from dashboard import (agreement_rate_by_item, safety_score_maker)
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn import cross_validation
 from sklearn import metrics
+import praw
+import os
+import re
+import time
 #Goal: Predict whether a comment is safe or not safe with reasonably high precision, maybe 85%?
 
+vectorizer = TfidfVectorizer()
+classifier = BernoulliNB() 
 
 def organize_data():
     """Grab label and comment body data from db, excluding those without 100% agreement rates. Return two lists"""
@@ -47,7 +53,6 @@ def make_vectors():
     labels = organize_data()[0]
     comments = organize_data()[1]
 
-    vectorizer = TfidfVectorizer()
 
     X = vectorizer.fit_transform(comments)
     Y = np.array(labels)
@@ -57,13 +62,11 @@ def make_vectors():
     #print X.shape, Y.shape (as of 10/9 shape is (357, 2598) (357,) items in list + unique words I thinK? 
 
 def cross_validate():
-    """ instantiate the classifier and cross-validate """
+    """Cross-validate """
 
     X = make_vectors()[0]
     Y = make_vectors()[1]
 
-
-    classifier = BernoulliNB() #instantiate classifier
 
     cv = cross_validation.StratifiedKFold(Y,5)
 
@@ -85,19 +88,91 @@ def cross_validate():
     print 'recall:', np.average(recall), '+/-', np.std(recall)
 
 
-def run_on_comment(body=None):
+def classify_a_comment(comment_body=None):
     """output what classifier thinks for a specific comment"""
+    
+    body = "testing testing testing"
+    body = vectorizer.transform([body])
 
-    vectorizer=TfidfVectorizer()
-    body = "Tits are big enough to see swinging from behind, I'll grant your request."
-    body = vectorizer.transform([sample])
-
-    classifier_output = clf.predict_proba(sample)
-    print "Sample OUTPUT:", classifier_output
+    classifier_output = classifier.predict_proba(body)
+    # print "Label order", classifier.classes_
+    # print "Brand Safe", classifier_output[0][0]
+    # print "Not Brand Safe", classifier_output[0][1]
+    
     return classifier_output
 
 
+def heuristic_maker(item_id):
+    """Grabs signals about a given comment and outputs a guess as to safe or not safe"""
+    
+    ####auth-- let's restructure this later
+    reddit = praw.Reddit(client_id=os.environ['CLIENT_ID'],
+        client_secret=os.environ['CLIENT_SECRET'],
+        user_agent=os.environ['USER_AGENT'])
+   
+    #### variables & sql fetching ####
+    curr_item_id = item_id
+    sql = """select subreddit, author, body from items where item_id = :item_id"""
+    cursor = db.session.execute(sql, {'item_id': curr_item_id})
+    comment_data = cursor.fetchall()
+    curr_subreddit = comment_data[0][0]
+    author = comment_data[0][1]
+    comment_body = comment_data[0][2]
 
+
+    ####Is the subreddit nsfw####
+    s = reddit.subreddit(curr_subreddit)
+    if s.over18:
+        sub_nsfw = True
+    elif s.over18 is False:
+        sub_nsfw = False
+    else: 
+        sub_nsfw = None
+
+    ####Is author's account new?####
+    u = reddit.redditor(author)
+    account_age_days = (time.time() - u.created_utc)/60/60/24
+
+    ####What is the author's comment karma?###
+    author_comment_karma = u.comment_karma
+
+    ####Does comment contain badwords & how many?####
+    badwords_list = [w.word for w in BadWord.query.filter(BadWord.language == 'en')]
+    matches = {}
+    badwords_pattern = r'\b(' + '|'.join(badwords_list) + r')\b'
+    res = re.findall(badwords_pattern, comment_body.lower(), re.IGNORECASE)
+    if len(res) > 0:
+        matches[curr_item_id] = ', '.join(res)
+    badword_count = len(matches)
+    badwords = matches
+
+    ####What is the subreddit safety score
+    safety_information = safety_score_maker()
+    for item in safety_information:
+        if curr_subreddit in item:
+            subreddit_safety_score = item[1]
+            break
+        else: 
+            subreddit_safety_score = None 
+
+    ####Does Bernoulli classifier think safe or not safe
+    classifier_ratings = classify_a_comment(comment_body)
+    safe_rating = classifier_ratings[0][0]
+    unsafe_rating = classifier_ratings[0][1]
+
+    if safe_rating > unsafe_rating:
+        clf_safety_higher = True
+    elif safe_rating < unsafe_rating:
+        clf_safety_higher = False
+
+    print "Subreddit", curr_subreddit
+    print "Author", author
+    print "NSFW?", sub_nsfw
+    print "Account Age", account_age_days
+    print "MATCHES", matches, len(matches)
+    print "KARMA", author_comment_karma
+    print "subreddit_safety_score", subreddit_safety_score
+    print "CLF Safety Bool", clf_safety_higher, "Ratings", safe_rating, unsafe_rating
 
 
 

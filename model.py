@@ -88,7 +88,7 @@ class BadWord(db.Model):
 
         return "<Word word_id=%s word=%s>" % (self.word_id, self.word)
 
-### not yet convinced I need this
+
 # class AbuseScore(db.Model):
 #     """store abuse score data about comments"""
 

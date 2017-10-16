@@ -15,6 +15,7 @@ import classifier
 import random
 
 
+
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"],
                                 deprecated="auto")
 app = Flask(__name__)
@@ -328,10 +329,11 @@ def display_insights_dash():
 def testing():
     """route testing out classifier.py functionality & other things along the way"""
 
-    # classifier.organize_data()
-    # classifier.make_vectors()
-    # classifier.cross_validate()
-    dashboard.heuristic_maker(1515)
+    classifier.organize_data()
+    classifier.make_vectors()
+    classifier.cross_validate()
+    classifier.classify_a_comment()
+    classifier.heuristic_maker(1515)
 
 
     return "123"
