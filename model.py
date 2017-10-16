@@ -89,23 +89,30 @@ class BadWord(db.Model):
         return "<Word word_id=%s word=%s>" % (self.word_id, self.word)
 
 
-# class AbuseScore(db.Model):
-#     """store abuse score data about comments"""
+class AbuseScore(db.Model):
+    """store abuse score data about comments"""
 
-#     __tablename__= "abusescores"
+    __tablename__= "abusescores"
 
-#     item_id = db.Column(db.ForeignKey('items.item_id'))
-#     sub_nsfw = db.Column(db.Boolean, nullable=True)
-#     sub_safety_score = 
+    score_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    item_id = db.Column(db.ForeignKey('items.item_id'))
+    sub_nsfw = db.Column(db.Boolean, nullable=True)
+    account_age = db.Column(db.Float, nullable=True) 
+    badword_count = db.Column(db.Integer, nullable=True)
+    author_karma = db.Column(db.Integer, nullable=True)
+    s_safety_score = db.Column(db.Float, nullable=True)
+    clf_safe_rating = db.Column(db.Float, nullable=True)
+    clf_unsafe_rating = db.Column(db.Float, nullable=True)
+    clf_safety_higher = db.Column(db.Boolean, nullable=True)
 
 
-#     #Define relationships to other tables
-#     item = db.relationship("Item", backref=db.backref("actions", order_by=time_created))
+    #Define relationships to other tables
+    item = db.relationship("Item", backref=db.backref("abusescores"))
 
-#     def __repr__(self):
-#     """Prettify printed output"""
+    def __repr__(self):
+        """Prettify printed output"""
 
-#     return "<Item item_id=%s>" % (self.item_id)
+        return "<Item item_id=%s clf_safe_rating=%s>" % (self.item_id, self.clf_safe_rating)
 
 
 ##############################################################################

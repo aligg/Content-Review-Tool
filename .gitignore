@@ -7,3 +7,4 @@ testing.py
 .coverage
 ipyn/
 htmlcov/
+databackup

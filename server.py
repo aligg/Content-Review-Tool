@@ -153,6 +153,7 @@ def picker_handler_api_helper():
         submissions[submission.id] = submission
     
     comments = seed.grab_comments(reddit, submissions)
+    print "Comments", comments
 
     return comments
 
@@ -323,7 +324,6 @@ def display_insights_dash():
 
     return render_template("insights_dashboard.html", 
                             safety_information=safety_information)
-
 
 @app.route('/testing')
 def testing():
