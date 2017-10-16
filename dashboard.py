@@ -230,6 +230,32 @@ def safety_score_maker():
     return safety_information
 
 
+def heuristic_maker(item_id):
+    """Grabs signals about a given comment and outputs a guess as to safe or not safe"""
+
+    #Check if comment is on an nsfw subreddit
+    sql = """select item_id, subreddit from items where item_id = :item_id"""
+    cursor = db.session.execute(sql,
+                                {'item_id': curr_item_id}
+                                )
+    subreddit = cursor.fetchall()
+
+
+    s = reddit.subreddit('#subredditname')
+    if s.over18:
+        
+
+
+
+    #Is poster new
+
+    #Does comment contain badwords
+
+    #Does classifier think safe or not safe
+
+    #What is the subreddit safety score
+
+
 
 
 

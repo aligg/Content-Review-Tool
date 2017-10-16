@@ -71,7 +71,7 @@ class LoggedInServerTests(unittest.TestCase):
         result=self.client.get("/picker")
         self.assertIn("Subreddit", result.data)
 
-#why does this still query the api live?!?!
+
     def test_picker_handler(self):
         """Does the picker handler route work & redirect to the queue with proper contents displayed?"""
 
@@ -87,10 +87,9 @@ class LoggedInServerTests(unittest.TestCase):
 ##### submit test returning integrity errors ####
     # def test_submit(self):
     #     """Does the queue submit work?"""
-        
 
-    #     submit_data = {"item_id": "5678", "reviewer_id" : "1", "time_created": "datetime.datetime.utcnow()", "label_applied": "brand_safe", "notes": "TEST", "batchsize" : '1' }
-        
+    #     submit_data = {"item_id": 5678, "reviewer_id" : 1, "time_created": datetime.datetime.utcnow(), "label_applied": "brand_safe", "notes": "TEST", "batchsize" : 1}
+
     #     result = self.client.post("/submit", data=submit_data, follow_redirects=True)
 
     #     self.assertIn("Review Item", result.data)

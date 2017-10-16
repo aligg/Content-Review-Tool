@@ -52,7 +52,7 @@ class Reviewer(db.Model):
 class Action(db.Model):
     """actions applied by reviewers on items in CRT"""
 
-    __tablename__="actions"
+    __tablename__= "actions"
 
     action_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     item_id = db.Column(db.ForeignKey('items.item_id'))
@@ -87,6 +87,25 @@ class BadWord(db.Model):
         """Prettify printed output"""
 
         return "<Word word_id=%s word=%s>" % (self.word_id, self.word)
+
+### not yet convinced I need this
+# class AbuseScore(db.Model):
+#     """store abuse score data about comments"""
+
+#     __tablename__= "abusescores"
+
+#     item_id = db.Column(db.ForeignKey('items.item_id'))
+#     sub_nsfw = db.Column(db.Boolean, nullable=True)
+#     sub_safety_score = 
+
+
+#     #Define relationships to other tables
+#     item = db.relationship("Item", backref=db.backref("actions", order_by=time_created))
+
+#     def __repr__(self):
+#     """Prettify printed output"""
+
+#     return "<Item item_id=%s>" % (self.item_id)
 
 
 ##############################################################################
