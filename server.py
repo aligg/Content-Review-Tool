@@ -328,10 +328,10 @@ def display_insights_dash():
 def testing():
     """route testing out classifier.py functionality & other things along the way"""
 
-    classifier.organize_data()
-    classifier.make_vectors()
-    classifier.cross_validate()
-    # dashboard.heuristic_maker()
+    # classifier.organize_data()
+    # classifier.make_vectors()
+    # classifier.cross_validate()
+    dashboard.heuristic_maker(1515)
 
 
     return "123"

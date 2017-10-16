@@ -59,7 +59,6 @@ def make_vectors():
 def cross_validate():
     """ instantiate the classifier and cross-validate """
 
-
     X = make_vectors()[0]
     Y = make_vectors()[1]
 
@@ -84,6 +83,23 @@ def cross_validate():
 
     print 'precision:',np.average(precision), '+/-', np.std(precision) #as of 10/9 13% precision and 4% recall #as of 10/12 28% precision 11% recall 
     print 'recall:', np.average(recall), '+/-', np.std(recall)
+
+
+def run_on_comment(body=None):
+    """output what classifier thinks for a specific comment"""
+
+    vectorizer=TfidfVectorizer()
+    body = "Tits are big enough to see swinging from behind, I'll grant your request."
+    body = vectorizer.transform([sample])
+
+    classifier_output = clf.predict_proba(sample)
+    print "Sample OUTPUT:", classifier_output
+    return classifier_output
+
+
+
+
+
 
 
     # probs= classifier.feature_log_prob_[1] - classifier.feature_log_prob_[0]
