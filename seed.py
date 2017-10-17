@@ -84,12 +84,14 @@ def load_items(comments=None):
     
     if comments is None:
         comments = grab_comments(reddit)
+    item_objects = []
+    item_index = 0
 
     for link_id, values in comments.items(): 
         if link_id not in link_id_list:
             parent = values.get('parent', None)
             author = values.get('author', None)
-            item = Item(
+            items.append(Item(
                 link_id = link_id,
                 body = values['body'],
                 author = author,
@@ -99,11 +101,16 @@ def load_items(comments=None):
                 controversiality = values['controversiality'],
                 upvotes = values['upvotes'],
                 downvotes = values['downvotes'],
-                parent = parent)
+                parent = parent))
             print "DB seeded with more comments!"
-            db.session.add(item)
+            db.session.add(item_objects[item_index])
+            item_index += 1
 
     db.session.commit()
+
+    #grab item_ids committed out of item, make 
+    item_ids = [item.item_id for item in item_objects] #looks like e.g. [3090, 3091, 3092, 3093, 3094, 3095, 3096, 3097, 3098, 3099, 3100, 3101, 3102, 3103, 3104, 3105, 3106, 3107, 3108, 3109, 3110, 3111]
+    print item_ids
 
 
 def load_images():
@@ -164,7 +171,7 @@ def set_val_word_id():
 def load_abuse_scores():
     """Populate initial abuse score database"""
 
-    item_ids = """select item_id from items where parent is Null and item_id not in (select item_id from abusescores) limit 10;"""
+    item_ids = """select item_id from items where parent is Null and item_id not in (select item_id from abusescores) limit 500;"""
     cursor = db.session.execute(item_ids)
     comment_data = cursor.fetchall()
     item_id_list = [item_id[0] for item_id in comment_data]

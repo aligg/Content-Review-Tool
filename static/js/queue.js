@@ -99,7 +99,7 @@ $(document).keypress(function(e) {
         { 
         $('.slider').trigger('click');
         }
-        if(e.which == 116)  //t still not working 
+        if(e.which == 116)  //t works but resets default for all the rest
         { 
         $('.notsafe').trigger('click');
         }

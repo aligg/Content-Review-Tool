@@ -101,6 +101,31 @@ def classify_a_comment(comment_body):
     
     return classifier_output
 
+def is_nsfw(reddit, subreddit):
+    """check if subreddit is nsfw, helper function for heuristic, removing api call from the main function"""
+
+    s = reddit.subreddit(subreddit)
+    if s.over18:
+        sub_nsfw = True
+    elif s.over18 is False:
+        sub_nsfw = False
+    else: 
+        sub_nsfw = None
+
+    return sub_nsfw
+
+def memoize(f):
+    """ memo to reduce api calls, receives reddit object & curr_subreddit from heuristic maker"""
+    
+    memo = {}
+    def helper(x, y): 
+        if y not in memo:            
+            memo[y] = f(x, y)
+        return memo[y]
+    return helper
+
+is_nsfw = memoize(is_nsfw)
+
 
 def heuristic_maker(item_id):
     """Grabs signals about a given comment and outputs a guess as to safe or not safe"""
@@ -122,20 +147,17 @@ def heuristic_maker(item_id):
 
 
     ####Is the subreddit nsfw####
-    s = reddit.subreddit(curr_subreddit)
-    if s.over18:
-        sub_nsfw = True
-    elif s.over18 is False:
-        sub_nsfw = False
-    else: 
-        sub_nsfw = None
+    sub_nsfw = is_nsfw(reddit, curr_subreddit)
 
-    ####Is author's account new?####
-    u = reddit.redditor(author)
-    account_age_days = (time.time() - u.created_utc)/60/60/24
+    ####Is author's account new? What's their karma?####
+    try:
+        u = reddit.redditor(author)
+        account_age_days = (time.time() - u.created_utc)/60/60/24
+        author_comment_karma = u.comment_karma
 
-    ####What is the author's comment karma?###
-    author_comment_karma = u.comment_karma
+    except:
+        account_age_days = None
+        author_comment_karma = None    
 
     ####Does comment contain badwords & how many?####
     badwords_list = [w.word for w in BadWord.query.filter(BadWord.language == 'en')]
@@ -176,34 +198,6 @@ def heuristic_maker(item_id):
                                         "clf_safety_higher" : clf_safety_higher
                                         }
     return comment_heuristics
-
-
-def load_abuse_scores():
-    """Populate initial abuse score database"""
-
-    item_ids = """select item_id from items where parent is Null and item_id > 0 and item_id < 10 order by item_id asc;"""
-    cursor = db.session.execute(item_ids)
-    comment_data = cursor.fetchall()
-    item_id_list = [item_id[0] for item_id in comment_data]
-    
-    for item_id in item_id_list:
-        comment_heuristics = heuristic_maker(item_id)
-       
-        
-        item = AbuseScore(item_id = item_id,
-                            sub_nsfw = comment_heuristics[item_id]['sub_nsfw'],
-                            account_age = comment_heuristics[item_id]['account_age_days'],
-                            badword_count = comment_heuristics[item_id]['badword_count'],
-                            author_karma = comment_heuristics[item_id]['author_karma'],
-                            s_safety_score = comment_heuristics[item_id]['s_safety_score'],
-                            clf_safe_rating = comment_heuristics[item_id]['clf_safe_rating'],
-                            clf_unsafe_rating = comment_heuristics[item_id]['clf_unsafe_rating'],
-                            clf_safety_higher = comment_heuristics[item_id]['clf_safety_higher'])
-        db.session.add(item)
-
-    db.session.commit()
-        
-
 
 
 
