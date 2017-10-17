@@ -1,7 +1,9 @@
 var options = {
     responsive: true,
     scales: {
-            yAxes: [{ display: true, ticks: { beginAtZero: true } }]
+            yAxes: [{ display: true, ticks: { beginAtZero: true
+                                             } 
+                    }]
             },
     title: {
             display: true,
@@ -18,7 +20,10 @@ var options = {
 var optionsagr = {
     responsive: true,
     scales: {
-            yAxes: [{ display: true, ticks: { beginAtZero: true } }]
+            yAxes: [{ display: true, ticks: { beginAtZero: true,
+                                            callback: function(value){return value+ "%"}
+                                             } 
+                    }]
             },
     title: {
         display: true,

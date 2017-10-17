@@ -131,7 +131,8 @@ def agreement_rate_maker():
     for date, agreement_rates in day_and_rates_list:
         days.append(date) 
         sample.append(len(agreement_rates)) 
-        rate.append(numpy.mean(agreement_rates)) 
+        rate.append("{:.2f}".format((numpy.mean(agreement_rates))*100))
+        
 
     days = [str(day) for day in days] 
          
