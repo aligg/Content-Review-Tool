@@ -226,9 +226,34 @@ def safety_score_maker():
         new = (subreddit, safety_score, total)
         safety_information.append(new)
     
-    safety_information = sorted(safety_information, key=lambda x: x[1])
+    safety_information = sorted(safety_information, key=lambda safety_score: safety_score[1], reverse=True)
 
-    return safety_information
+    return safety_information #an ordered list of tuples [(u'gonewild', Decimal('0.5333333333333333333333333333'), 60L), etc
+
+def get_insights_table_data():
+    """Format data for the insights bar chart in format for chart.js"""
+
+    labels = []
+    data = []
+    safety_information = safety_score_maker()
+    for item in safety_information:
+        labels.append(item[0])
+        score = "{:.2f}".format((item[1]))
+        if score != '100.00':
+            score = float(score)*100
+        data.append(score)
+
+
+    data_dict = {
+            "labels":  labels,
+            "datasets": [
+                        {
+                        "data": data,
+                        }
+                        ]
+                }
+
+    return data_dict
 
 
 

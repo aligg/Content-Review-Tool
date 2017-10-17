@@ -327,6 +327,14 @@ def display_insights_dash():
     return render_template("insights_dashboard.html", 
                             safety_information=safety_information)
 
+@app.route('/dashboard-sub-safety-scores.json')
+def pass_safety_data_to_chart():
+    """return data for the safety scores insights chart in json format"""
+
+    data_dict = dashboard.get_insights_table_data()
+    
+    return jsonify(data_dict)
+
 @app.route('/testing')
 def testing():
     """route testing out classifier.py functionality & other things along the way"""
