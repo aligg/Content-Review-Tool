@@ -153,7 +153,11 @@ def picker_handler_api_helper():
         submissions[submission.id] = submission
     
     comments = seed.grab_comments(reddit, submissions)
-    print "COMMENTLENGTH", len(comments)
+
+    print comments
+    print len(comments)
+    print session 
+
     return comments
 
 

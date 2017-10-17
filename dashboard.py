@@ -9,7 +9,8 @@ def table1_sql():
 
     sql = """
     select date_trunc('day', time_created) as date, count(action_id) as total_reviews
-    from actions
+    from actions 
+    where time_created > CURRENT_DATE - Interval '1 month'
     group by 1
     order by 1 asc
     """
@@ -64,6 +65,7 @@ def table2_sql():
 
     sql = """ select max(time_created) as last_review, item_id, count(item_id) as rev_count, array_agg(reviewer_id), string_agg(label_applied, ', ') 
                 from actions
+                where time_created > CURRENT_DATE - Interval '1 month'
                 group by 2
                 having count(item_id) > 1 
                 order by 1 desc;

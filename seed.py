@@ -77,7 +77,7 @@ def grab_comments(reddit, s=None):
 
 
 def load_items(comments=None):
-    """Populate items table with data from Reddit API"""
+    """Populate items & abusescores tables with data from Reddit API & internally calculated fields"""
 
 
     link_id_list = [a.link_id for a in Item.query.all()]
@@ -91,7 +91,7 @@ def load_items(comments=None):
         if link_id not in link_id_list:
             parent = values.get('parent', None)
             author = values.get('author', None)
-            items.append(Item(
+            item_objects.append(Item(
                 link_id = link_id,
                 body = values['body'],
                 author = author,
@@ -108,9 +108,27 @@ def load_items(comments=None):
 
     db.session.commit()
 
-    #grab item_ids committed out of item, make 
     item_ids = [item.item_id for item in item_objects] #looks like e.g. [3090, 3091, 3092, 3093, 3094, 3095, 3096, 3097, 3098, 3099, 3100, 3101, 3102, 3103, 3104, 3105, 3106, 3107, 3108, 3109, 3110, 3111]
-    print item_ids
+    print item_ids 
+    organize_data()
+    make_vectors()
+    cross_validate()
+    for item_id in item_ids:
+        print item 
+        comment_heuristics = heuristic_maker(item_id)
+        item = AbuseScore(item_id = item_id,
+                            sub_nsfw = comment_heuristics[item_id]['sub_nsfw'],
+                            account_age = comment_heuristics[item_id]['account_age_days'],
+                            badword_count = comment_heuristics[item_id]['badword_count'],
+                            author_karma = comment_heuristics[item_id]['author_karma'],
+                            s_safety_score = comment_heuristics[item_id]['s_safety_score'],
+                            clf_safe_rating = comment_heuristics[item_id]['clf_safe_rating'],
+                            clf_unsafe_rating = comment_heuristics[item_id]['clf_unsafe_rating'],
+                            clf_safety_higher = comment_heuristics[item_id]['clf_safety_higher'])
+        db.session.add(item)
+
+    db.session.commit()
+
 
 
 def load_images():
@@ -205,10 +223,7 @@ if __name__ == "__main__":
     # load_images()
     # load_items()
     # set_val_word_id()
-    organize_data()
-    make_vectors()
-    cross_validate()
-    load_abuse_scores()
+    # load_abuse_scores()
 
 
     
