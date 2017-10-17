@@ -2,14 +2,34 @@ var options = {
     responsive: true,
     scales: {
             yAxes: [{ display: true, ticks: { beginAtZero: true } }]
-            }
+            },
+    title: {
+            display: true,
+            text: 'Daily total reviews, last 30 days',
+            fontSize: 18,
+            fontColor: "rgb(72,72,72)",
+            padding: 20
+        },
+    legend: {
+        display: false,
+    }
 };
 
 var optionsagr = {
     responsive: true,
     scales: {
             yAxes: [{ display: true, ticks: { beginAtZero: true } }]
-            }
+            },
+    title: {
+        display: true,
+        text: 'Daily reviewer agreement rate, last 30 days',
+        fontSize: 18,
+        fontColor: "rgb(72,72,72)",
+        padding: 20
+        },
+    legend: {
+        display: false,
+    }
 };
 
 var ctx_line = $("#dailiesChart").get(0).getContext("2d");

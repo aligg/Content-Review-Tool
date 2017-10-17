@@ -1,8 +1,5 @@
-
-
 var currentReview = 1;
 var amIBlurred = false;
-
 
 
 //hide review objects 2-5
@@ -99,7 +96,7 @@ $(document).keypress(function(e) {
         { 
         $('.slider').trigger('click');
         }
-        if(e.which == 116)  //t works but resets default for all the rest
+        if(e.which == 116)  //t 
         { 
         $('#notsafe--'+currentReview).trigger('click');
         }
