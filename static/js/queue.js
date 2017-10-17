@@ -101,7 +101,7 @@ $(document).keypress(function(e) {
         }
         if(e.which == 116)  //t works but resets default for all the rest
         { 
-        $('.notsafe').trigger('click');
+        $('#notsafe--'+currentReview).trigger('click');
         }
         if(e.which == 113)  //q still not working
         { 

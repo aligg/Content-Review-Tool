@@ -153,10 +153,8 @@ def picker_handler_api_helper():
         submissions[submission.id] = submission
     
     comments = seed.grab_comments(reddit, submissions)
-    print "Comments", comments
-
+    print "COMMENTLENGTH", len(comments)
     return comments
-
 
 
 @app.route('/picker-handler', methods=["POST"])
@@ -329,9 +327,9 @@ def display_insights_dash():
 def testing():
     """route testing out classifier.py functionality & other things along the way"""
 
-    classifier.organize_data()
-    classifier.make_vectors()
-    classifier.cross_validate()
+    # classifier.organize_data()
+    # classifier.make_vectors()
+    # classifier.cross_validate()
     # classifier.classify_a_comment()
     # classifier.heuristic_maker(1)
     classifier.load_abuse_scores()
