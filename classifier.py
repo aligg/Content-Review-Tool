@@ -1,4 +1,4 @@
-from model import (connect_to_db, db, Item, Reviewer, Action, BadWord)
+from model import (connect_to_db, db, Item, Reviewer, Action, BadWord, AbuseScore)
 from dashboard import (agreement_rate_by_item, safety_score_maker)
 import numpy as np
 from sklearn.linear_model import LogisticRegression
@@ -88,10 +88,10 @@ def cross_validate():
     print 'recall:', np.average(recall), '+/-', np.std(recall)
 
 
-def classify_a_comment(comment_body=None):
+def classify_a_comment(comment_body):
     """output what classifier thinks for a specific comment"""
     
-    body = "testing testing testing"
+    body = comment_body
     body = vectorizer.transform([body])
 
     classifier_output = classifier.predict_proba(body)
@@ -118,6 +118,7 @@ def heuristic_maker(item_id):
     curr_subreddit = comment_data[0][0]
     author = comment_data[0][1]
     comment_body = comment_data[0][2]
+    comment_heuristics = {}
 
 
     ####Is the subreddit nsfw####
@@ -165,14 +166,46 @@ def heuristic_maker(item_id):
     elif safe_rating < unsafe_rating:
         clf_safety_higher = False
 
-    print "Subreddit", curr_subreddit
-    print "Author", author
-    print "NSFW?", sub_nsfw
-    print "Account Age", account_age_days
-    print "MATCHES", matches, len(matches)
-    print "KARMA", author_comment_karma
-    print "subreddit_safety_score", subreddit_safety_score
-    print "CLF Safety Bool", clf_safety_higher, "Ratings", safe_rating, unsafe_rating
+    comment_heuristics[curr_item_id] = {"sub_nsfw" : sub_nsfw,
+                                        "account_age_days" : account_age_days,
+                                        "badword_count" : len(matches),
+                                        "author_karma" : author_comment_karma,
+                                        "s_safety_score" : subreddit_safety_score,
+                                        "clf_safe_rating" : safe_rating,
+                                        "clf_unsafe_rating" : unsafe_rating,
+                                        "clf_safety_higher" : clf_safety_higher
+                                        }
+    return comment_heuristics
+
+
+def load_abuse_scores():
+    """Populate initial abuse score database"""
+
+    item_ids = """select item_id from items where parent is Null and item_id > 0 and item_id < 10 order by item_id asc;"""
+    cursor = db.session.execute(item_ids)
+    comment_data = cursor.fetchall()
+    item_id_list = [item_id[0] for item_id in comment_data]
+    
+    for item_id in item_id_list:
+        comment_heuristics = heuristic_maker(item_id)
+       
+        
+        item = AbuseScore(item_id = item_id,
+                            sub_nsfw = comment_heuristics[item_id]['sub_nsfw'],
+                            account_age = comment_heuristics[item_id]['account_age_days'],
+                            badword_count = comment_heuristics[item_id]['badword_count'],
+                            author_karma = comment_heuristics[item_id]['author_karma'],
+                            s_safety_score = comment_heuristics[item_id]['s_safety_score'],
+                            clf_safe_rating = comment_heuristics[item_id]['clf_safe_rating'],
+                            clf_unsafe_rating = comment_heuristics[item_id]['clf_unsafe_rating'],
+                            clf_safety_higher = comment_heuristics[item_id]['clf_safety_higher'])
+        db.session.add(item)
+
+    db.session.commit()
+        
+
+
+
 
 
 

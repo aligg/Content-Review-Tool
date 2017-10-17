@@ -1,8 +1,9 @@
 import os
 import praw
 from sqlalchemy import func
-from model import (Action, Reviewer, Item, BadWord, connect_to_db, db)
+from model import (Action, Reviewer, Item, BadWord, connect_to_db, db, AbuseScore)
 import datetime
+from classifier import (heuristic_maker, organize_data, make_vectors, cross_validate)
 
 
 def authorize():
@@ -104,6 +105,7 @@ def load_items(comments=None):
 
     db.session.commit()
 
+
 def load_images():
     """Populate items table with image data from Reddit API"""
 
@@ -148,7 +150,7 @@ def load_words():
 
 
 
-def set_val_user_id():
+def set_val_word_id():
     """Set value for the next word_id after seeding badwords table"""
 
     result = db.session.query(func.max(BadWord.word_id)).one()
@@ -158,7 +160,32 @@ def set_val_user_id():
     db.session.execute(query, {'new_id': max_id + 1})
     db.session.commit()
 
+
+def load_abuse_scores():
+    """Populate initial abuse score database"""
+
+    item_ids = """select item_id from items where parent is Null and item_id not in (select item_id from abusescores) limit 10;"""
+    cursor = db.session.execute(item_ids)
+    comment_data = cursor.fetchall()
+    item_id_list = [item_id[0] for item_id in comment_data]
     
+    for item_id in item_id_list:
+        comment_heuristics = heuristic_maker(item_id)
+       
+        
+        item = AbuseScore(item_id = item_id,
+                            sub_nsfw = comment_heuristics[item_id]['sub_nsfw'],
+                            account_age = comment_heuristics[item_id]['account_age_days'],
+                            badword_count = comment_heuristics[item_id]['badword_count'],
+                            author_karma = comment_heuristics[item_id]['author_karma'],
+                            s_safety_score = comment_heuristics[item_id]['s_safety_score'],
+                            clf_safe_rating = comment_heuristics[item_id]['clf_safe_rating'],
+                            clf_unsafe_rating = comment_heuristics[item_id]['clf_unsafe_rating'],
+                            clf_safety_higher = comment_heuristics[item_id]['clf_safety_higher'])
+        db.session.add(item)
+
+    db.session.commit()
+        
 
 reddit = authorize()
 
@@ -169,8 +196,12 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # load_images()
-    load_items()
-    set_val_user_id()
+    # load_items()
+    # set_val_word_id()
+    organize_data()
+    make_vectors()
+    cross_validate()
+    load_abuse_scores()
 
 
     

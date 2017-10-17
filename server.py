@@ -332,8 +332,9 @@ def testing():
     classifier.organize_data()
     classifier.make_vectors()
     classifier.cross_validate()
-    classifier.classify_a_comment()
-    classifier.heuristic_maker(1515)
+    # classifier.classify_a_comment()
+    # classifier.heuristic_maker(1)
+    classifier.load_abuse_scores()
 
 
     return "123"
