@@ -2,6 +2,9 @@
 
 {% block content %}
 
+<div class="container-fluid">
+
+
 {% for comment in comments %}
 <div id="reviewobject-{{loop.index}}">
     {% for link_id, word in matches.items() %}
@@ -68,6 +71,7 @@ Review Item {{loop.index}} <b>ID:</b> {{comment.link_id}}
     <input type="submit" value="Submit" id="submit" class="submit">
 </form>
 
+</div>
 
 <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="/static/js/queue.js"></script>
