@@ -1,18 +1,21 @@
 <!doctype html>
 <html>
 <head>
-    <title>CRT</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/nav.css">
+    <link rel="icon" type="image/png" href="static/images/bighammy.png">
+    <title>Content Review Tool</title>
+    <link rel="stylesheet" type="text/css" href="static/css/nav.css">
 </head>
 <body>
 <div class="nav">
     <ul>
     {% if "reviewer id" in session %}
+        <li><a href="/" class="navbar-left"><img src="static/images/lilhammy.png"></a></li>
         <li><a class="navbutton-home" href="/"><b> {{ session['handle'] }}</b></a></li>
         <li><a class="navbutton-home" href="/">{{rev_count }} reviews today</a></li>
         <li><a class="logbutton" href="/logout">Logout</a></li>
     {% endif %}
     {%if "reviewer id" not in session %}
+        <li><a href="/" class="navbar-left"><img src="static/images/lilhammy.png"></a></li>
         <li><a class="logbutton" href="/login">Log in</a></li>
     {% endif %}
     </ul>
