@@ -1,3 +1,5 @@
+
+
 var options = {
     responsive: true,
     scales: {
@@ -34,3 +36,4 @@ $.get("/dashboard-sub-safety-scores.json", function (data) {
                                 options: options
                             });
 });
+

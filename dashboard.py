@@ -18,7 +18,6 @@ def table1_sql():
     cursor = db.session.execute(sql)
     datasample = cursor.fetchall()
 
-
     return datasample
 
 
@@ -236,6 +235,11 @@ def get_insights_table_data():
 
     labels = []
     data = []
+    sample = []
+    colors = []
+    blue = "rgb(54, 162, 235)"  #greenrgb(21, 180, 130)"
+    yellow =  "rgb(21, 180, 130)"  #"rgb(208, 242, 130)"
+    red = "rgb(255, 99, 132)"
     safety_information = safety_score_maker()
     for item in safety_information:
         labels.append(item[0])
@@ -243,12 +247,20 @@ def get_insights_table_data():
         if score != '100.00':
             score = float(score)*100
         data.append(score)
+        sample.append(item[2])
+        if score >= 90:
+            colors.append(blue)
+        elif score <90 and score >= 80:
+            colors.append(yellow)
+        else:
+            colors.append(red)
 
 
     data_dict = {
             "labels":  labels,
             "datasets": [
-                        {
+                        {"label": "Safety Score",
+                        "backgroundColor": colors,
                         "data": data,
                         }
                         ]

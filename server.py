@@ -100,7 +100,7 @@ def queue():
     for item in comments:
         res = re.findall(badwords_pattern, item.body.lower(), re.IGNORECASE)
         if len(res) > 0:
-            matches[item.link_id] = ','.join(res)
+            matches[item.link_id] = ', '.join(res)
 
     return render_template("queue.html", 
                             comments=comments,
@@ -153,10 +153,6 @@ def picker_handler_api_helper():
         submissions[submission.id] = submission
     
     comments = seed.grab_comments(reddit, submissions)
-
-    print comments
-    print len(comments)
-    print session 
 
     return comments
 
@@ -332,7 +328,7 @@ def pass_safety_data_to_chart():
     """return data for the safety scores insights chart in json format"""
 
     data_dict = dashboard.get_insights_table_data()
-    
+
     return jsonify(data_dict)
 
 @app.route('/testing')
