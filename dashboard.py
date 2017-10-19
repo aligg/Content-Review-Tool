@@ -237,9 +237,10 @@ def get_insights_table_data():
     data = []
     sample = []
     colors = []
-    blue = "rgb(54, 162, 235)"  #greenrgb(21, 180, 130)"
-    yellow =  "rgb(21, 180, 130)"  #"rgb(208, 242, 130)"
+    blue = "rgb(54, 162, 235)"  
+    green =  "rgb(21, 180, 130)"  
     red = "rgb(255, 99, 132)"
+    purple = "rgb(147,112,219)"
     safety_information = safety_score_maker()
     for item in safety_information:
         labels.append(item[0])
@@ -251,9 +252,11 @@ def get_insights_table_data():
         if score >= 90:
             colors.append(blue)
         elif score <90 and score >= 80:
-            colors.append(yellow)
-        else:
+            colors.append(green)
+        elif score <80 and score>50:
             colors.append(red)
+        else:
+            colors.append(purple)
 
 
     data_dict = {

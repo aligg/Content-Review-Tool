@@ -8,6 +8,7 @@
 </head>
 <body>
 
+
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -46,12 +47,12 @@
 </html>
 
 
+
 {% for message in get_flashed_messages() %}
 {{message}}
 {% endfor %}
 
 {% block content%}
-
 
 {%endblock%}
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>

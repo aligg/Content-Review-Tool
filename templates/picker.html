@@ -4,7 +4,7 @@
 
 
 
-
+<div class="container-fluid">
 <div id="subreddit-area">
     {% for item in surprise %}
         {{ item }}<br>
@@ -12,9 +12,9 @@
 </div>
 
 <div id="status-area">
-    API kittens fetching as fast as they can! Thanks for waiting.<br>
-    <img src="static/images/treadmill.gif"><br>
-    If they don't find anything, please try again!
+    <h4>API kittens fetching as fast as they can! Thanks for waiting.<h4><br>
+    <img src="static/images/cats/water.gif"><br>
+    <h4>If they don't find anything, please try again!<h4>
 </div>
 
 <form id="pickerhandler" action="/picker-handler", method="POST">
@@ -37,7 +37,7 @@
 
 
 
-
+</div>
 <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="/static/js/picker.js"></script>
 
