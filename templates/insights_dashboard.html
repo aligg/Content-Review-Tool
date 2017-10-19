@@ -2,13 +2,15 @@
 
 {% block content %}
 <div class="crt-chart">
-  <canvas id="insightsChart"></canvas>
+  <canvas id="insightsChart" width="800" height="800"></canvas>
 </div>
 
 <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
 <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
 <script src="/static/js/insights-dashboard.js"></script>
+
+
 
 <!-- <b> Safety Scores by subreddit </b><br>
 {% for item in safety_information %}

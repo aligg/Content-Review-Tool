@@ -18,6 +18,10 @@
 
 }
 
+#insightsChart {
+   height: 100%;
+}
+
 th {
     background-color: rgba(151,187,205,1);
 }

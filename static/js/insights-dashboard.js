@@ -1,16 +1,19 @@
 
 
 var options = {
-    responsive: true,
+    responsive: false,
     scales: {
             xAxes: [{ display: true, 
                         ticks: { beginAtZero: true,
                                 callback: function(value){return value+ "%"} },
                         position: 'top',
                     }],
-            yAxes: [{ barPercentage: .9,
-                        categoryPercentage: 1,
-                        maxBarThickness: 10
+            yAxes: [{ barPercentage: 1,
+                        categoryPercentage: .9,
+                        maxBarThickness: 30,
+                        ticks: {
+                            fontSize: 15
+                        }
                     }]
             },
     title: {
