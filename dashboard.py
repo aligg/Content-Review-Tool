@@ -327,46 +327,50 @@ def classifier_performance():
             group by 1,2,3
             """
     cursor = db.session.execute(sql)
-    output = cursor.fetchall()
+    sqloutput = cursor.fetchall()
 
-    for week, item_id, label in output:
+    #Create a dict with percent correct & incorrect per week 
+    output = {}
+    for week, comment_id, label in sqloutput: 
         week = str(week)[:10]
-        item_id = item_id
-        label = label
-        print week 
-    total = 0
-    correct = 0
-    incorrect = 0
-    incorrect_unsure = 0
-   
-    
-    for i in range(len(output)):
-        comment_id = output[i][1]
-        label = output[i][2]
-        verdict = heuristic_classifier(comment_id)
-        if verdict == "need_more_info":
-            incorrect_unsure += 1
-            total += 1
-        elif label == verdict:
-            correct += 1
-            total += 1
+        if week not in output:
+            output[week] = {"total" : 0, "correct" : 0, "incorrect" : 0, 
+                "incorrect_unsure" : 0,
+                "percent correct" : 0, 
+                "percent wrong" : 0}
+            verdict = heuristic_classifier(comment_id)
+            if verdict == "need_more_info":
+                output[week]["incorrect_unsure"] += 1
+                output[week]["total"] += 1
+            elif label == verdict:
+                output[week]["correct"] += 1
+                output[week]["total"] += 1
+            else:
+                output[week]["incorrect"] += 1
+                output[week]["total"] += 1
+        if week in output:
+            verdict = heuristic_classifier(comment_id)
+            if verdict == "need_more_info":
+                output[week]["incorrect_unsure"] += 1
+                output[week]["total"] += 1
+            elif label == verdict:
+                output[week]["correct"] += 1
+                output[week]["total"] += 1
+            else:
+                output[week]["incorrect"] += 1
+                output[week]["total"] += 1
 
-        else:
-            incorrect += 1
-            total += 1
- 
-    output = {"total" : total, "correct" : correct, "incorrect" : incorrect, 
-                "incorrect unsure" : incorrect_unsure,
-                "percent correct" : "{:.2f}".format(float(correct)/total), 
-                "percent wrong" : "{:.2f}".format(float(incorrect)/total)}
-    
+    for key, value in output.items():
+        value["percent correct"] = "{:.2f}".format(float(value["correct"])/value["total"])
+        value["percent wrong"] = "{:.2f}".format(float(value["incorrect"])/value["total"])
+
     return output 
 
 
 
 
     
-#str(week)[:10]
+
 
 
 
