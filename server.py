@@ -292,9 +292,11 @@ def display_dash():
     """renders dashboard"""
     
     weekliespp = dashboard.get_table3_data()
-    safety_information = dashboard.safety_score_maker()
+    wrongs = dashboard.wrongs_deep_dive()
 
-    return render_template("dashboard.html", weekliespp=weekliespp)
+    return render_template("dashboard.html", 
+                            weekliespp=weekliespp, 
+                            wrongs=wrongs)
 
 
 @app.route('/dashboard-line-dailies.json')
@@ -345,15 +347,15 @@ def pass_automation_rate_to_chart():
 def testing():
     """route testing out classifier.py functionality & other things along the way"""
 
-    classifier.organize_data()
-    classifier.make_vectors()
-    classifier.cross_validate()
+    # classifier.organize_data()
+    # classifier.make_vectors()
+    # classifier.cross_validate()
     # classifier.classify_a_comment()
     # classifier.heuristic_maker(1)
     # classifier.load_abuse_scores()
     # dashboard.heuristic_classifier(9)
     # dashboard.classifier_performance()
-    dashboard.automation_rate_chart()
+    dashboard.wrongs_deep_dive()
     return "123"
 
 

@@ -11,7 +11,7 @@
 }
 
 #weekliesppTable, th {
-  text-align: left;
+  /*text-align: left;*/
   padding: 10px;
   color: rgb(72,72,72);
   ;

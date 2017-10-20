@@ -291,6 +291,7 @@ def heuristic_classifier(comment_id):
     karma = 0
     sscore = 0
     clf_safe = 0
+    rule = 0
     ###variables from sql result
     for result in item:
         item_id = result[0] 
@@ -304,18 +305,24 @@ def heuristic_classifier(comment_id):
     ###heuristic logic 
     if clf_safe is False and badwords > 0:
         verdict = "not_brand_safe"
+        rule = 1
     elif sub_nsfw is True and badwords > 0:
         verdict = "not_brand_safe"
+        rule = 2
     elif sub_nsfw is True and sscore < .85 and clf_safe is False:
         verdict = "not_brand_safe"
+        rule = 3
     elif sub_nsfw is True and sscore < .6:
         verdict = "not_brand_safe"
+        rule = 4
     elif account_age > 500 and badwords == 0 and karma > 2000 and sscore > .85 and clf_safe is True:
         verdict = "brand_safe"
+        rule = 5
     else:
         verdict = "need_more_info"
+        rule = 6
     
-    return verdict
+    return (verdict, rule)
 
 def classifier_performance():
     """Understand what percentage of verdicts can be automated with high quality"""
@@ -328,7 +335,7 @@ def classifier_performance():
             """
     cursor = db.session.execute(sql)
     sqloutput = cursor.fetchall()
-
+    wrongs = []
     #Create a dict with percent correct & incorrect per week 
     output = {}
     for week, comment_id, label in sqloutput: 
@@ -338,7 +345,7 @@ def classifier_performance():
                 "incorrect_unsure" : 0,
                 "percent correct" : 0, 
                 "percent wrong" : 0}
-        verdict = heuristic_classifier(comment_id)
+        verdict = heuristic_classifier(comment_id)[0]
         if verdict == "need_more_info":
             output[week]["incorrect_unsure"] += 1
             output[week]["total"] += 1
@@ -348,18 +355,19 @@ def classifier_performance():
         else:
             output[week]["incorrect"] += 1
             output[week]["total"] += 1
+            wrongs.append(comment_id)
+
             
     for key, value in output.items():
         value["percent correct"] = "{:.2f}".format(float(value["correct"])/value["total"]*100)
         value["percent wrong"] = "{:.2f}".format(float(value["incorrect"])/value["total"]*100)
 
-    print output
-    return output 
+    return (output, wrongs)
 
 def automation_rate_chart():
     """Pass data for automation rate chart to the template"""
 
-    output = classifier_performance()
+    output = classifier_performance()[0]
     weeks = sorted(output) #labels
     data = [output[week]["percent correct"] for week in weeks] #percent correct
     data2 = [output[week]["percent wrong"] for week in weeks] #percent incorrect
@@ -433,6 +441,42 @@ def automation_rate_chart():
             ]
             }
     return data_dict
+
+def wrongs_deep_dive():
+    """Output data about items where the heuristic called it wrong"""
+    wrongs_list = classifier_performance()[1]
+    wrongs = tuple(classifier_performance()[1])
+
+    verdict_rule = []
+    for c_id in wrongs_list:
+        verdict_rule.append((c_id, heuristic_classifier(c_id) ))
+
+    sql = """select a.item_id, body, subreddit, sub_nsfw, account_age, author_karma, badword_count, s_safety_score, clf_safety_higher, MAX(date_trunc('day', time_created)) as date
+            from items a
+            join abusescores b
+            on a.item_id = b.item_id
+            join actions c
+            on b.item_id = c.item_id
+            where a.item_id in :wrongs
+            group by 1,2,3,4,5,6,7,8,9
+            order by 10 desc
+            
+    """
+
+    cursor = db.session.execute(sql, 
+                                {"wrongs" : wrongs}
+                                )
+    result = cursor.fetchall()
+
+    output = result
+
+    #### still need to figure out how to combine these data structures ####
+    ##to do - combine result & verdict_rule into one table
+    ### add up which rule is causing the most errors & return that too 
+
+    return output
+
+
     
 
 
