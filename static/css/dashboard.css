@@ -18,6 +18,11 @@
 
 }
 
+#badRulesTable {
+  margin: auto;
+  width: 20%;
+}
+
 #insightsChart {
    height: 100%;
 }

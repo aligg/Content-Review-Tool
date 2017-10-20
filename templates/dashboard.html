@@ -10,8 +10,6 @@
 </div><br>
 
 
-
-
 <table id="weekliesppTable">
     <caption><h3>Weekly Reviews By Reviewier</h3></caption>
     <tr>
@@ -32,9 +30,23 @@
 <h3> Classifier Data </h3>
 <div class="crt-chart">
     <canvas id="automationChart"></canvas>
-</div>
+</div><br>
 
-{{wrongs}}
+<table id="badRulesTable">
+    <caption><h3>Rules returning errors</h3></caption>
+    <tr>
+        <th>Rule</th>
+        <th>Error Count</th>
+    </tr>
+
+{% for item in badrules %}
+    <tr>
+        <td>{{ item[0] }}</td>
+        <td> {{ item[1] }}</td>
+    </tr>
+{% endfor %}
+</table>
+
 
 <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
 <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>

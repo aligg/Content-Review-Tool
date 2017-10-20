@@ -312,9 +312,9 @@ def heuristic_classifier(comment_id):
     elif sub_nsfw is True and sscore < .85 and clf_safe is False:
         verdict = "not_brand_safe"
         rule = 3
-    elif sub_nsfw is True and sscore < .6:
-        verdict = "not_brand_safe"
-        rule = 4
+    # elif sub_nsfw is True and sscore < .04:
+    #     verdict = "not_brand_safe"
+    #     rule = 4
     elif account_age > 500 and badwords == 0 and karma > 2000 and sscore > .85 and clf_safe is True:
         verdict = "brand_safe"
         rule = 5
@@ -442,14 +442,28 @@ def automation_rate_chart():
             }
     return data_dict
 
+def rules_returning_errors():
+    """Rules most frequently returning errors"""
+    
+    wrongs_list = classifier_performance()[1]
+    bad_rules = {}
+    for c_id in wrongs_list:    
+        bad_rules[heuristic_classifier(c_id)[1]] = bad_rules.get(heuristic_classifier(c_id)[1], 0) + 1
+    
+    bad_rules_desc = sorted(bad_rules.items(), key=lambda x: -x[1])
+    return bad_rules_desc
+
+
 def wrongs_deep_dive():
-    """Output data about items where the heuristic called it wrong"""
+    """Output data abosut items where the heuristic called it wrong"""
     wrongs_list = classifier_performance()[1]
     wrongs = tuple(classifier_performance()[1])
 
     verdict_rule = []
     for c_id in wrongs_list:
         verdict_rule.append((c_id, heuristic_classifier(c_id) ))
+
+
 
     sql = """select a.item_id, body, subreddit, sub_nsfw, account_age, author_karma, badword_count, s_safety_score, clf_safety_higher, MAX(date_trunc('day', time_created)) as date
             from items a
@@ -474,7 +488,7 @@ def wrongs_deep_dive():
     ##to do - combine result & verdict_rule into one table
     ### add up which rule is causing the most errors & return that too 
 
-    return output
+    return (output, verdict_rule)
 
 
     

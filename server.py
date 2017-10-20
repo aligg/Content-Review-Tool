@@ -292,11 +292,11 @@ def display_dash():
     """renders dashboard"""
     
     weekliespp = dashboard.get_table3_data()
-    wrongs = dashboard.wrongs_deep_dive()
+    badrules = dashboard.rules_returning_errors()
 
     return render_template("dashboard.html", 
-                            weekliespp=weekliespp, 
-                            wrongs=wrongs)
+                            weekliespp=weekliespp,
+                            badrules=badrules)
 
 
 @app.route('/dashboard-line-dailies.json')
@@ -355,7 +355,8 @@ def testing():
     # classifier.load_abuse_scores()
     # dashboard.heuristic_classifier(9)
     # dashboard.classifier_performance()
-    dashboard.wrongs_deep_dive()
+    # dashboard.wrongs_deep_dive()
+    dashboard.rules_returning_errors()
     return "123"
 
 
