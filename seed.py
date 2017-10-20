@@ -108,8 +108,8 @@ def load_items(comments=None):
 
     db.session.commit()
 
-    item_ids = [item.item_id for item in item_objects] #looks like e.g. [3090, 3091, 3092, 3093, 3094, 3095, 3096, 3097, 3098, 3099, 3100, 3101, 3102, 3103, 3104, 3105, 3106, 3107, 3108, 3109, 3110, 3111]
-    print item_ids 
+    item_ids = [item.item_id for item in item_objects]
+  
     organize_data()
     make_vectors()
     cross_validate()
