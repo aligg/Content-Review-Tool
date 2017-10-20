@@ -271,10 +271,102 @@ def get_insights_table_data():
 
     return data_dict
 
+def heuristic_classifier(comment_id):
+    """Using data from abusescores table made in heuristic_maker above, predict safety label outcome"""
+
+    ###grab data from abusescores db
+    sql = """select item_id, sub_nsfw, account_age, badword_count, author_karma, s_safety_score, clf_safety_higher
+            from abusescores
+            where item_id = :item_id
+            group by 1,2,3,4,5,6,7
+            limit 10
+            """
+    cursor = db.session.execute(sql,
+                                {"item_id" : comment_id})
+    item = cursor.fetchall()
+    item_id = 0
+    sub_nsfw = 0
+    account_age = 0
+    badwords = 0
+    karma = 0
+    sscore = 0
+    clf_safe = 0
+    ###variables from sql result
+    for result in item:
+        item_id = result[0] 
+        sub_nsfw = result[1] 
+        account_age = result[2] 
+        badwords = result[3] 
+        karma = result[4] 
+        sscore = result[5] 
+        clf_safe = result[6] 
+
+    ###heuristic logic 
+    if clf_safe is False and badwords > 0:
+        verdict = "not_brand_safe"
+    elif sub_nsfw is True and badwords > 0:
+        verdict = "not_brand_safe"
+    elif sub_nsfw is True and sscore < .85 and clf_safe is False:
+        verdict = "not_brand_safe"
+    elif sub_nsfw is True and sscore < .6:
+        verdict = "not_brand_safe"
+    elif account_age > 500 and badwords == 0 and karma > 2000 and sscore > .85 and clf_safe is True:
+        verdict = "brand_safe"
+    else:
+        verdict = "need_more_info"
+    
+    return verdict
+
+def classifier_performance():
+    """Understand what percentage of verdicts can be automated with high quality"""
+
+    sql = """select date_trunc('week', time_created), a.item_id, label_applied 
+            from items a
+            join actions b
+            on a.item_id = b.item_id
+            group by 1,2,3
+            """
+    cursor = db.session.execute(sql)
+    output = cursor.fetchall()
+
+    for week, item_id, label in output:
+        week = str(week)[:10]
+        item_id = item_id
+        label = label
+        print week 
+    total = 0
+    correct = 0
+    incorrect = 0
+    incorrect_unsure = 0
+   
+    
+    for i in range(len(output)):
+        comment_id = output[i][1]
+        label = output[i][2]
+        verdict = heuristic_classifier(comment_id)
+        if verdict == "need_more_info":
+            incorrect_unsure += 1
+            total += 1
+        elif label == verdict:
+            correct += 1
+            total += 1
+
+        else:
+            incorrect += 1
+            total += 1
+ 
+    output = {"total" : total, "correct" : correct, "incorrect" : incorrect, 
+                "incorrect unsure" : incorrect_unsure,
+                "percent correct" : "{:.2f}".format(float(correct)/total), 
+                "percent wrong" : "{:.2f}".format(float(incorrect)/total)}
+    
+    return output 
+
+
 
 
     
-
+#str(week)[:10]
 
 
 

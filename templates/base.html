@@ -43,18 +43,27 @@
     </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
+
+
 </nav>
 </html>
 
 
-
 {% for message in get_flashed_messages() %}
+<div class="alert alert-info">
 {{message}}
+</div>
 {% endfor %}
+
+
+
+<div class="container-fluid">
+
 
 {% block content%}
 
 {%endblock%}
+</div>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
 </body>
 </html>

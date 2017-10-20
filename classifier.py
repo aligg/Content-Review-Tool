@@ -200,7 +200,50 @@ def heuristic_maker(item_id):
     return comment_heuristics
 
 
+def heuristic_classifier(comment_id):
+    """Using data from abusescores table made in heuristic_maker above, predict safety label outcome"""
 
+    ###grab data from abusescores db
+    sql = """select item_id, sub_nsfw, account_age, badword_count, author_karma, s_safety_score, clf_safety_higher
+            from abusescores
+            where item_id = :item_id
+            group by 1,2,3,4,5,6,7
+            limit 10
+            """
+    cursor = db.session.execute(sql,
+                                {"item_id" : comment_id})
+    item = cursor.fetchall()
+    
+    ###variables from sql result
+    for result in item:
+        item_id = result[0] 
+        sub_nsfw = result[1] 
+        account_age = result[2] 
+        badwords = result[3] 
+        karma = result[4] 
+        sscore = result[5] 
+        clf_safe = result[6] 
+
+    ###heuristic logic 
+    if clf_safe is False and badwords > 0:
+        verdict = "not_brand_safe"
+    elif sub_nsfw is True and badwords > 0:
+        verdict = "not_brand_safe"
+    elif sub_nsfw is True and sscore < .85 and clf_safe is False:
+        verdict = "not_brand_safe"
+    elif sub_nsfw is True and sscore < .6:
+        verdict = "not_brand_safe"
+    elif account_age > 500 and badwords == 0 and karma > 2000 and sscore > .85 and clf_safe is True:
+        verdict = "brand_safe"
+    else:
+        verdict = "need_more_info"
+
+    return verdict
+
+
+       
+
+        
 
 
 

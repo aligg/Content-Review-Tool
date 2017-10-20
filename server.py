@@ -335,14 +335,14 @@ def pass_safety_data_to_chart():
 def testing():
     """route testing out classifier.py functionality & other things along the way"""
 
-    # classifier.organize_data()
-    # classifier.make_vectors()
-    # classifier.cross_validate()
+    classifier.organize_data()
+    classifier.make_vectors()
+    classifier.cross_validate()
     # classifier.classify_a_comment()
     # classifier.heuristic_maker(1)
-    classifier.load_abuse_scores()
-
-
+    # classifier.load_abuse_scores()
+    dashboard.heuristic_classifier(9)
+    dashboard.classifier_performance()
     return "123"
 
 
@@ -353,7 +353,7 @@ if __name__ == "__main__":
 
     connect_to_db(app, "postgresql:///crt")
 
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run(host='0.0.0.0')
 

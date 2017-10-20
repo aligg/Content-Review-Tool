@@ -8,8 +8,8 @@
 {% for comment in comments %}
 <div id="reviewobject-{{loop.index}}">
     {% for link_id, word in matches.items() %}
-        {% if link_id == comment.link_id %}
-        <div class="bannerwarning">Warning, Warning! This comment contains potential unsafe language: "{{word}}"</div>
+        {% if link_id == comment.link_id %}     
+        <div class="alert alert-warning"><strong>Warning!</strong> This comment contains potential unsafe language: <strong>"{{word}}"</strong> </div>
     {% endif %}
 {% endfor %}
 
