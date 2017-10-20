@@ -331,6 +331,16 @@ def pass_safety_data_to_chart():
 
     return jsonify(data_dict)
 
+
+@app.route('/dashboard-automation-rate.json')
+def pass_automation_rate_to_chart():
+    """return data for the automation rate chart in json format"""
+
+    data_dict = dashboard.automation_rate_chart()
+
+    return jsonify(data_dict)
+
+
 @app.route('/testing')
 def testing():
     """route testing out classifier.py functionality & other things along the way"""

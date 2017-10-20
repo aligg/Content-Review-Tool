@@ -350,10 +350,10 @@ def classifier_performance():
             output[week]["total"] += 1
             
     for key, value in output.items():
-        value["percent correct"] = "{:.2f}".format(float(value["correct"])/value["total"])
-        value["percent wrong"] = "{:.2f}".format(float(value["incorrect"])/value["total"])
+        value["percent correct"] = "{:.2f}".format(float(value["correct"])/value["total"]*100)
+        value["percent wrong"] = "{:.2f}".format(float(value["incorrect"])/value["total"]*100)
 
-
+    print output
     return output 
 
 def automation_rate_chart():
@@ -363,12 +363,79 @@ def automation_rate_chart():
     weeks = sorted(output) #labels
     data = [output[week]["percent correct"] for week in weeks] #percent correct
     data2 = [output[week]["percent wrong"] for week in weeks] #percent incorrect
+    data3 = [1 for week in weeks]
+
+    data_dict = {
+        "labels": weeks,
+        "datasets": [
+            {
+                "label": "Automation Rate",
+                "fill": False,
+                "lineTension": 0.5,
+                "backgroundColor": "rgba(151,187,205,0.2)",
+                "borderColor": "rgba(151,187,205,1)",
+                "borderCapStyle": 'butt',
+                "borderDash": [],
+                "borderDashOffset": 0.0,
+                "borderJoinStyle": 'miter',
+                "pointBorderColor": "rgba(151,187,205,1)",
+                "pointBackgroundColor": "#fff",
+                "pointBorderWidth": 1,
+                "pointHoverRadius": 5,
+                "pointHoverBackgroundColor": "#fff",
+                "pointHoverBorderColor": "rgba(151,187,205,1)",
+                "pointHoverBorderWidth": 2,
+                "pointHitRadius": 10,
+                "data": data,
+                "spanGaps": False},
+            {
+                "label": "Error Rate",
+                "fill": False,
+                "lineTension": 0.5,
+                "backgroundColor": "rgba(255, 0, 0, 0.4)",
+                "borderColor": "rgba(255, 0, 0, 0.4)",
+                "borderCapStyle": 'butt',
+                "borderDash": [],
+                "borderDashOffset": 0.0,
+                "borderJoinStyle": 'miter',
+                "pointBorderColor": "rgba(255, 0, 0, 0.4)",
+                "pointBackgroundColor": "#fff",
+                "pointBorderWidth": 1,
+                "pointHoverRadius": 5,
+                "pointHoverBackgroundColor": "#fff",
+                "pointHoverBorderColor": "rgba(255, 0, 0, 0.4)",
+                "pointHoverBorderWidth": 2,
+                "pointHitRadius": 10,
+                "data": data2,
+                "spanGaps": False
+            },
+{
+                "label": "Target Error Rate",
+                "fill": False,
+                "lineTension": 0.5,
+                "backgroundColor": "rgb(216,191,216)",
+                "borderColor": "rgb(221,160,221)",
+                "borderCapStyle": 'butt',
+                "borderDash": [],
+                "borderDashOffset": 0.0,
+                "borderJoinStyle": 'miter',
+                "pointBorderColor": "rgb(221,160,221)",
+                "pointBackgroundColor": "#fff",
+                "pointBorderWidth": 1,
+                "pointHoverRadius": 5,
+                "pointHoverBackgroundColor": "#fff",
+                "pointHoverBorderColor": "rgb(221,160,221)",
+                "pointHoverBorderWidth": 2,
+                "pointHitRadius": 10,
+                "data": data3,
+                "spanGaps": False
+            }
+            ]
+            }
+    return data_dict
     
 
-    ##pass data to chart
-    print weeks
-    print data
-    print data2
+
 
 
 

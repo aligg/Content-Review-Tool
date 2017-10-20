@@ -3,16 +3,14 @@
 
 
 {% block content %}
+<h3> Human Review Data </h3>
 <div class="crt-chart">
   <canvas id="dailiesChart"></canvas>
   <canvas id="agreementChart"></canvas>
-</div>
+</div><br>
 
 
-<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
-<script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
-<script src="/static/js/dashboard.js"></script>
+
 
 <table id="weekliesppTable">
     
@@ -30,6 +28,16 @@
     </tr>
 {% endfor %}
 </table>
+
+<h3> Classifier Data </h3>
+<div class="crt-chart">
+    <canvas id="automationChart"></canvas>
+</div>
+
+<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
+<script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+<script src="/static/js/dashboard.js"></script>
 
 {% endblock %}
 
