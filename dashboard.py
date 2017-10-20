@@ -338,33 +338,38 @@ def classifier_performance():
                 "incorrect_unsure" : 0,
                 "percent correct" : 0, 
                 "percent wrong" : 0}
-            verdict = heuristic_classifier(comment_id)
-            if verdict == "need_more_info":
-                output[week]["incorrect_unsure"] += 1
-                output[week]["total"] += 1
-            elif label == verdict:
-                output[week]["correct"] += 1
-                output[week]["total"] += 1
-            else:
-                output[week]["incorrect"] += 1
-                output[week]["total"] += 1
-        if week in output:
-            verdict = heuristic_classifier(comment_id)
-            if verdict == "need_more_info":
-                output[week]["incorrect_unsure"] += 1
-                output[week]["total"] += 1
-            elif label == verdict:
-                output[week]["correct"] += 1
-                output[week]["total"] += 1
-            else:
-                output[week]["incorrect"] += 1
-                output[week]["total"] += 1
-
+        verdict = heuristic_classifier(comment_id)
+        if verdict == "need_more_info":
+            output[week]["incorrect_unsure"] += 1
+            output[week]["total"] += 1
+        elif label == verdict:
+            output[week]["correct"] += 1
+            output[week]["total"] += 1
+        else:
+            output[week]["incorrect"] += 1
+            output[week]["total"] += 1
+            
     for key, value in output.items():
         value["percent correct"] = "{:.2f}".format(float(value["correct"])/value["total"])
         value["percent wrong"] = "{:.2f}".format(float(value["incorrect"])/value["total"])
 
+
     return output 
+
+def automation_rate_chart():
+    """Pass data for automation rate chart to the template"""
+
+    output = classifier_performance()
+    weeks = sorted(output) #labels
+    data = [output[week]["percent correct"] for week in weeks] #percent correct
+    data2 = [output[week]["percent wrong"] for week in weeks] #percent incorrect
+    
+
+    ##pass data to chart
+    print weeks
+    print data
+    print data2
+
 
 
 

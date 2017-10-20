@@ -341,8 +341,9 @@ def testing():
     # classifier.classify_a_comment()
     # classifier.heuristic_maker(1)
     # classifier.load_abuse_scores()
-    dashboard.heuristic_classifier(9)
-    dashboard.classifier_performance()
+    # dashboard.heuristic_classifier(9)
+    # dashboard.classifier_performance()
+    dashboard.automation_rate_chart()
     return "123"
 
 
