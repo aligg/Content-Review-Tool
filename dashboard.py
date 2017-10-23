@@ -320,9 +320,9 @@ def heuristic_classifier(comment_id):
     elif sub_nsfw is True and sscore < .85 and clf_safe is False:
         verdict = "not_brand_safe"
         rule = 3
-    elif sub_nsfw is True and sscore < .5 and account_age < 700 and karma < 5000:
-        verdict = "not_brand_safe"
-        rule = 4
+    # elif sub_nsfw is True and sscore < .5 and account_age < 700 and karma < 5000:
+    #     verdict = "not_brand_safe"
+    #     rule = 4
     elif account_age > 500 and badwords == 0 and karma > 2000 and sscore > .85 and clf_safe is True:
         verdict = "brand_safe"
         rule = 5

@@ -114,7 +114,7 @@ def load_items(comments=None):
     make_vectors()
     cross_validate()
     for item_id in item_ids:
-        print item 
+
         comment_heuristics = heuristic_maker(item_id)
         item = AbuseScore(item_id = item_id,
                             sub_nsfw = comment_heuristics[item_id]['sub_nsfw'],
