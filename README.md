@@ -11,22 +11,22 @@ Content review tool (CRT) software useful for anyone wanting to review content i
 ### Getting Started ###
 The training page shows new reviewers how to get started and highlights some queue features including blurring, hotkeys, and batch submissions. 
 
-<kbd><img align="center" src="/static/images/training.png" /></kbd>
+<kbd><img align="center" src="/static/images/training.png" width="600" align="center" /></kbd>
 
 
 ### The Queue ###
 Within the queue, reviewers see the comment or image for review as well as additional contextualizing information about the review item. If a comment contains a badword, the reviewer will see a banner indicating the content is potentially unsafe. In the image below you can also see the nav bar, with increments daily reviews with each batch submission so the reviewer can see progress. Review verdicts are only added to the db  
 
-<kbd><img align="center" src="/static/images/queue.png" /></kbd>
+<kbd><img align="center" src="/static/images/queue.png" width="600" align="center" /></kbd>
 
 ### Dashboards ###
 The tool has both operational and insights dashboards. A few tables highlighted below. 
 
-<kbd><img src="/static/images/agreementrate.png" width="400" align="center" /></kbd>
+<kbd><img src="/static/images/agreementrate.png" width="600" align="center" /></kbd>
 
-<kbd><img src="/static/images/classifier.png"  width="400" align="center" /></kbd>
+<kbd><img src="/static/images/classifier.png"  width="600" align="center" /></kbd>
 
-<kbd><img src="/static/images/insights.png"  width="400" align="center" /></kbd>
+<kbd><img src="/static/images/insights.png"  width="600" align="center" /></kbd>
 
 ### Questions? ###
 Made by [@aliglenesk](https://twitter.com/aliglenesk)
