@@ -6,5 +6,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - source secret.sh
   - python -m unittest tests
