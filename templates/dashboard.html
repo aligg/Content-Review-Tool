@@ -11,7 +11,7 @@
 
 
 <table id="weekliesppTable">
-    <caption><h3>Weekly Reviews By Reviewier</h3></caption>
+    <caption class="tableCaptions">Weekly Reviews By Reviewier</caption>
     <tr>
         <th>Week</th>
         <th>Reviewer</th>
@@ -36,7 +36,7 @@
     <div class = "row">
             <div class = "col-xs-6">
             <table id="badRulesTable">
-                    <caption><h3>Rules returning errors</h3></caption>
+                    <caption class="tableCaptions">Rules returning errors</caption>
                     <tr>
                         <th>Rule</th>
                         <th>Error Count</th>
@@ -52,13 +52,14 @@
             </div>
             <div class = "col-xs-6">
                 <table id="clfTable">
-                <caption><h3>Classifier Performance</h3></caption>
-
+                <caption class="tableCaptions">Classifier Performance</caption>
                 <tr>
-                    <td>Precision: {{ clfperformance[0] }}%        +/- {{clfperformance[1] }}</td>
+                    <th>Precision</th>
+                    <th>Recall</th>
                 </tr>
                 <tr>
-                    <td>Recall: {{ clfperformance[2]  }}%          +/- {{clfperformance[3] }}</td>
+                    <td>{{ clfperformance[0] }}%        +/- {{clfperformance[1] }}</td>
+                    <td>{{ clfperformance[2]  }}%          +/- {{clfperformance[3] }}</td>
                 </tr>
             </table>
             </div>

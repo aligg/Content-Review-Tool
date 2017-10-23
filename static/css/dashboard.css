@@ -1,3 +1,11 @@
+.tableCaptions{
+  text-align: center;
+  font-family: "Helvetica Neue";
+  color:  rgb(56,56,56);
+  font-size: 135%;
+  font-weight: bold;
+}
+
 #weekliesppTable {
     margin: auto;
     width: 80%;
@@ -11,7 +19,7 @@
 }
 
 #weekliesppTable, th {
-  /*text-align: left;*/
+  text-align: left;
   padding: 10px;
   color: rgb(72,72,72);
   ;
@@ -19,7 +27,10 @@
 }
 #bottomCharts {
   width: 80%;
+
 }
+
+
 #badRulesTable {
   margin: auto;
   width: 90%;
