@@ -1,19 +1,27 @@
 {% extends 'base.html' %}\
 
 {%block content %}
-<div class="container-fluid">
+<div class="container">
+<h2>Getting Started</h2><br>
+    <h4> Comment Policies </h4>
+    <p> Not Safe if: profanity, overt racism, hate speech, clear bullying, spam or only content is a link, clearly produced by a bot, in clear support of terrorism, or related to a sensitive event (recent tragedy e.g. vegas shooting) where the poster is making light of or glorifying the event. </p>
 
-<h2> Comment Policies </h2>
-<p> Not Safe if: profanity, overt racism, hate speech, clear bullying, spam or only content is a link, clearly produced by a bot, in clear support of terrorism, or related to a sensitive event (recent tragedy e.g. vegas shooting) where the poster is making light of or glorifying the event. </p>
+    <br><h4> Hot Keys </h4>
+    <p> Next: G<br>
+        Not Safe: T<br>
+    Back: C <br>
+    Blur: B <br>
+    Submit: P <br>
+     </p>
+    <br><h4> Additional Tool Tips </h4>
+    Once in the queue, exit to home by clicking hammy the cat in the upper-left corner. The queue will continue to load batches until you click the cat or the queue is booted.
+</div><br><br> 
+<div class="container" id="kittyPhoto">
 
-<h2> Hot Keys </h2>
-<p> Next: G<br>
-Back: C <br>
-Blur: B <br>
-Submit: P <br>
- </p>
-
-
+    <a  href="http://thecatapi.com"><img src="http://thecatapi.com/api/images/get?format=src&type=gif"></a>
+    <p>That's all, random cat says you've got this!</p>
 </div>
 
+
+<link rel="stylesheet" type="text/css" href="/static/css/training.css">
 {% endblock %}
