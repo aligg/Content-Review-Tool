@@ -25,7 +25,6 @@ passlib==1.7.1
 pathlib2==2.3.0
 pexpect==4.2.1
 pickleshare==0.7.4
-pkg-resources==0.0.0
 praw==5.1.0
 prawcore==0.12.0
 prompt-toolkit==1.0.15
