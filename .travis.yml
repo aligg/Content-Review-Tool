@@ -5,5 +5,8 @@ python:
 install:
   - pip install -r requirements.txt
 
+before_script:
+  - psql -c 'create database testdb' -U postgres
+
 script:
   - python -m unittest tests
