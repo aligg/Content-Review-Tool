@@ -8,7 +8,9 @@ Content review tool (CRT) software useful for anyone wanting to review content i
 * Adding an additional rule heuristic on top of the ML classifier allows us to automate comment safety verdicts in about 25% of cases with a less than 1% error rate. 
 
 ### Getting Started ###
+Training page shows new reviewers how to get started and highlights some queue features including blurring, hotkeys, and batch submissions. 
 ![Getting Started](/static/images/training.png)
 
 
 
+### The Queue ###
