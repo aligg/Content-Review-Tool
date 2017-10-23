@@ -293,10 +293,13 @@ def display_dash():
     
     weekliespp = dashboard.get_table3_data()
     badrules = dashboard.rules_returning_errors()
+    clfperformance = classifier.cross_validate()
+
 
     return render_template("dashboard.html", 
                             weekliespp=weekliespp,
-                            badrules=badrules)
+                            badrules=badrules,
+                            clfperformance=clfperformance)
 
 
 @app.route('/dashboard-line-dailies.json')

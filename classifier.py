@@ -80,12 +80,12 @@ def cross_validate():
     #print len(Y_train), len(Y_test) (as of 10/9 299 and 73 respectively)
         classifier.fit(X_train, Y_train)
         Y_hat = classifier.predict(X_test)
-        p,r,_,_ = metrics.precision_recall_fscore_support(Y_test, Y_hat) #want to understand this line better 
+        p,r,_,_ = metrics.precision_recall_fscore_support(Y_test, Y_hat) 
         precision.append(p[1])
         recall.append(r[1])
-
-    print 'precision:',np.average(precision), '+/-', np.std(precision) #as of 10/9 13% precision and 4% recall #as of 10/12 28% precision 11% recall 
-    print 'recall:', np.average(recall), '+/-', np.std(recall)
+    
+    return   ["{:.2f}".format(np.average(precision)*100), "{:.2f}".format(np.std(precision)*100),  
+             "{:.2f}".format(np.average(recall)*100), "{:.2f}".format(np.std(recall)*100)]
 
 
 def classify_a_comment(comment_body):
@@ -101,6 +101,7 @@ def classify_a_comment(comment_body):
     
     return classifier_output
 
+
 def is_nsfw(reddit, subreddit):
     """check if subreddit is nsfw, helper function for heuristic, removing api call from the main function"""
 
@@ -113,6 +114,7 @@ def is_nsfw(reddit, subreddit):
         sub_nsfw = None
 
     return sub_nsfw
+
 
 def memoize(f):
     """ memo to reduce api calls, receives reddit object & curr_subreddit from heuristic maker"""
@@ -198,20 +200,4 @@ def heuristic_maker(item_id):
                                         "clf_safety_higher" : clf_safety_higher
                                         }
     return comment_heuristics
-
-
-
-       
-
-        
-
-
-
-    # probs= classifier.feature_log_prob_[1] - classifier.feature_log_prob_[0]
-    # print len(probs)
-
-    # features=vectorizer.get_feature_names()
-    # print len(features) #as of now can only look at this 
-
-    # sorted(zip(probs,features), reverse=True [:50])
 

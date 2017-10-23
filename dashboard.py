@@ -215,6 +215,7 @@ def safety_score_maker():
     safety_score = 0
     safety_information = []
 
+    ###Iterate through sql output and calculate safety score per subreddit
     for subreddit, safes, not_safes, total in result:
         if safes == None:
             safety_score = 0
@@ -242,6 +243,8 @@ def get_insights_table_data():
     red = "rgb(255, 99, 132)"
     purple = "rgb(147,112,219)"
     safety_information = safety_score_maker()
+
+    ###create the lists to pass to the chart, including logic around colors
     for item in safety_information:
         labels.append(item[0])
         score = "{:.2f}".format((item[1]))
@@ -275,23 +278,27 @@ def heuristic_classifier(comment_id):
     """Using data from abusescores table made in heuristic_maker above, predict safety label outcome"""
 
     ###grab data from abusescores db
-    sql = """select item_id, sub_nsfw, account_age, badword_count, author_karma, s_safety_score, clf_safety_higher
-            from abusescores
-            where item_id = :item_id
-            group by 1,2,3,4,5,6,7
+    sql = """select a.item_id, sub_nsfw, account_age, badword_count, author_karma, s_safety_score, clf_safety_higher, upvotes
+            from abusescores a
+            join items b
+            on a.item_id = b.item_id
+            where a.item_id = :item_id
+            group by 1,2,3,4,5,6,7,8
             limit 10
             """
     cursor = db.session.execute(sql,
                                 {"item_id" : comment_id})
     item = cursor.fetchall()
-    item_id = 0
-    sub_nsfw = 0
-    account_age = 0
-    badwords = 0
-    karma = 0
-    sscore = 0
-    clf_safe = 0
-    rule = 0
+    item_id = None
+    sub_nsfw = None
+    account_age = None
+    badwords = None
+    karma = None
+    sscore = None
+    clf_safe = None
+    rule = None
+    upvotes = None
+    
     ###variables from sql result
     for result in item:
         item_id = result[0] 
@@ -301,6 +308,7 @@ def heuristic_classifier(comment_id):
         karma = result[4] 
         sscore = result[5] 
         clf_safe = result[6] 
+        upvotes = result[7]
 
     ###heuristic logic 
     if clf_safe is False and badwords > 0:
@@ -312,15 +320,21 @@ def heuristic_classifier(comment_id):
     elif sub_nsfw is True and sscore < .85 and clf_safe is False:
         verdict = "not_brand_safe"
         rule = 3
-    # elif sub_nsfw is True and sscore < .04:
-    #     verdict = "not_brand_safe"
-    #     rule = 4
+    elif sub_nsfw is True and sscore < .5 and account_age < 700 and karma < 5000:
+        verdict = "not_brand_safe"
+        rule = 4
     elif account_age > 500 and badwords == 0 and karma > 2000 and sscore > .85 and clf_safe is True:
         verdict = "brand_safe"
         rule = 5
+    elif upvotes < 0 and badwords > 0:
+        verdict = "not_brand_safe"
+        rule = 6
+    elif upvotes > 16 and badwords == 0:
+        verdict = "brand_safe"
+        rule = 7
     else:
         verdict = "need_more_info"
-        rule = 6
+        rule = 8
     
     return (verdict, rule)
 
@@ -333,10 +347,12 @@ def classifier_performance():
             on a.item_id = b.item_id
             group by 1,2,3
             """
+
     cursor = db.session.execute(sql)
     sqloutput = cursor.fetchall()
     wrongs = []
-    #Create a dict with percent correct & incorrect per week 
+    
+    ###Create a dict with percent correct & incorrect per week 
     output = {}
     for week, comment_id, label in sqloutput: 
         week = str(week)[:10]
@@ -357,7 +373,7 @@ def classifier_performance():
             output[week]["total"] += 1
             wrongs.append(comment_id)
 
-            
+    ### calculate percentage correct & incorrect      
     for key, value in output.items():
         value["percent correct"] = "{:.2f}".format(float(value["correct"])/value["total"]*100)
         value["percent wrong"] = "{:.2f}".format(float(value["incorrect"])/value["total"]*100)
@@ -443,7 +459,7 @@ def automation_rate_chart():
     return data_dict
 
 def rules_returning_errors():
-    """Rules most frequently returning errors"""
+    """Rules most frequently returning errors, returning  a list of tuples"""
     
     wrongs_list = classifier_performance()[1]
     bad_rules = {}
@@ -454,41 +470,6 @@ def rules_returning_errors():
     return bad_rules_desc
 
 
-def wrongs_deep_dive():
-    """Output data abosut items where the heuristic called it wrong"""
-    wrongs_list = classifier_performance()[1]
-    wrongs = tuple(classifier_performance()[1])
-
-    verdict_rule = []
-    for c_id in wrongs_list:
-        verdict_rule.append((c_id, heuristic_classifier(c_id) ))
-
-
-
-    sql = """select a.item_id, body, subreddit, sub_nsfw, account_age, author_karma, badword_count, s_safety_score, clf_safety_higher, MAX(date_trunc('day', time_created)) as date
-            from items a
-            join abusescores b
-            on a.item_id = b.item_id
-            join actions c
-            on b.item_id = c.item_id
-            where a.item_id in :wrongs
-            group by 1,2,3,4,5,6,7,8,9
-            order by 10 desc
-            
-    """
-
-    cursor = db.session.execute(sql, 
-                                {"wrongs" : wrongs}
-                                )
-    result = cursor.fetchall()
-
-    output = result
-
-    #### still need to figure out how to combine these data structures ####
-    ##to do - combine result & verdict_rule into one table
-    ### add up which rule is causing the most errors & return that too 
-
-    return (output, verdict_rule)
 
 
     

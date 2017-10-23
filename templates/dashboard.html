@@ -32,20 +32,39 @@
     <canvas id="automationChart"></canvas>
 </div><br>
 
-<table id="badRulesTable">
-    <caption><h3>Rules returning errors</h3></caption>
-    <tr>
-        <th>Rule</th>
-        <th>Error Count</th>
-    </tr>
+<div class="container-fluid" id="bottomCharts">
+    <div class = "row">
+            <div class = "col-xs-6">
+            <table id="badRulesTable">
+                    <caption><h3>Rules returning errors</h3></caption>
+                    <tr>
+                        <th>Rule</th>
+                        <th>Error Count</th>
+                    </tr>
 
-{% for item in badrules %}
-    <tr>
-        <td>{{ item[0] }}</td>
-        <td> {{ item[1] }}</td>
-    </tr>
-{% endfor %}
-</table>
+                {% for item in badrules %}
+                    <tr>
+                        <td>{{ item[0] }}</td>
+                        <td> {{ item[1] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            </div>
+            <div class = "col-xs-6">
+                <table id="clfTable">
+                <caption><h3>Classifier Performance</h3></caption>
+
+                <tr>
+                    <td>Precision: {{ clfperformance[0] }}%        +/- {{clfperformance[1] }}</td>
+                </tr>
+                <tr>
+                    <td>Recall: {{ clfperformance[2]  }}%          +/- {{clfperformance[3] }}</td>
+                </tr>
+            </table>
+            </div>
+    </div>
+</div>
+
 
 
 <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">

@@ -59,7 +59,6 @@ var optionsaut = {
 };
 
 var ctx_line = $("#dailiesChart").get(0).getContext("2d");
-
 $.get("/dashboard-line-dailies.json", function (data) {
   var myLineChart = Chart.Line(ctx_line, {
                                 data: data,
@@ -69,7 +68,6 @@ $.get("/dashboard-line-dailies.json", function (data) {
 
 
 var ctx_line_a = $("#agreementChart").get(0).getContext("2d");
-
 $.get("/dashboard-line-agreement.json", function (data) {
   var myLineChart = Chart.Line(ctx_line_a, {
                                 data: data,
@@ -78,7 +76,6 @@ $.get("/dashboard-line-agreement.json", function (data) {
 });
 
 var ctx_line_aut = $("#automationChart").get(0).getContext("2d");
-
 $.get("/dashboard-automation-rate.json", function (data) {
   var myLineChart = Chart.Line(ctx_line_aut, {
                                 data: data,
