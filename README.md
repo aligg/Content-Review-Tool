@@ -22,11 +22,11 @@ Within the queue, reviewers see the comment or image for review as well as addit
 ### Dashboards ###
 The tool has both operational and insights dashboards. A few tables highlighted below. 
 
-<kbd><img align="center" src="/static/images/agreementrate.png" width="200"/></kbd>
+<kbd><img src="/static/images/agreementrate.png" width="400" align="center" /></kbd>
 
-<kbd><img align="center" src="/static/images/classifier.png"  width="200"/></kbd>
+<kbd><img src="/static/images/classifier.png"  width="400" align="center" /></kbd>
 
-<kbd><img align="center" src="/static/images/insights.png"  width="200"/></kbd>
+<kbd><img src="/static/images/insights.png"  width="400" align="center" /></kbd>
 
 ### Questions? ###
 Made by [@aliglenesk](https://twitter.com/aliglenesk)
