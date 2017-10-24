@@ -81,8 +81,9 @@ def cross_validate():
         classifier.fit(X_train, Y_train)
         Y_hat = classifier.predict(X_test)
         p,r,_,_ = metrics.precision_recall_fscore_support(Y_test, Y_hat) 
-        precision.append(p[1])
-        recall.append(r[1])
+        if len(p) > 1:
+            precision.append(p[1])
+            recall.append(r[1])
     
     return   ["{:.2f}".format(np.average(precision)*100), "{:.2f}".format(np.std(precision)*100),  
              "{:.2f}".format(np.average(recall)*100), "{:.2f}".format(np.std(recall)*100)]
