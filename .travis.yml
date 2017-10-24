@@ -13,4 +13,4 @@ before_script:
 
 script:
 #  - python -m unittest tests
-  - py.test
+  - python tests.py
