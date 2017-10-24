@@ -28,20 +28,20 @@ def grab_submissions(reddit):
 
 
 
-def grab_images(reddit):
-    """grabs images from pics subreddit and add to a dict"""
+# def grab_images(reddit):
+#     """grabs images from pics subreddit and add to a dict"""
     
-    images={}
-    for submission in reddit.subreddit('pics').top('day', limit=30):
-        s=submission
-        images[s.id] = {"body" : s.url,
-                    "subreddit" : s.subreddit.display_name,
-                    "permalink": s.permalink,
-                    "submission" : s.title,
-                    "upvotes": s.ups,
-                    "downvotes": s.downs,
-                    "author": s.author.name}
-    return images
+#     images={}
+#     for submission in reddit.subreddit('pics').top('day', limit=30):
+#         s=submission
+#         images[s.id] = {"body" : s.url,
+#                     "subreddit" : s.subreddit.display_name,
+#                     "permalink": s.permalink,
+#                     "submission" : s.title,
+#                     "upvotes": s.ups,
+#                     "downvotes": s.downs,
+#                     "author": s.author.name}
+#     return images
 
 
 
@@ -131,47 +131,47 @@ def load_items(comments=None):
 
 
 
-def load_images():
-    """Populate items table with image data from Reddit API"""
+# def load_images():
+#     """Populate items table with image data from Reddit API"""
 
 
-    link_id_list = [a.link_id for a in Item.query.all()]
+#     link_id_list = [a.link_id for a in Item.query.all()]
 
-    images = grab_images(reddit)
+#     images = grab_images(reddit)
 
-    for link_id, values in images.items(): 
-        if link_id not in link_id_list:
-            author = values.get('author', None)
-            item = Item(
-                link_id = link_id,
-                body = values['body'],
-                author = author,
-                submission = values['submission'],
-                subreddit = values['subreddit'],
-                permalink = values['permalink'],
-                upvotes = values['upvotes'],
-                downvotes = values['downvotes'],
-                parent = "image")
-            print "DB seeded with images!"
-            db.session.add(item)
+#     for link_id, values in images.items(): 
+#         if link_id not in link_id_list:
+#             author = values.get('author', None)
+#             item = Item(
+#                 link_id = link_id,
+#                 body = values['body'],
+#                 author = author,
+#                 submission = values['submission'],
+#                 subreddit = values['subreddit'],
+#                 permalink = values['permalink'],
+#                 upvotes = values['upvotes'],
+#                 downvotes = values['downvotes'],
+#                 parent = "image")
+#             print "DB seeded with images!"
+#             db.session.add(item)
 
-    db.session.commit()
+#     db.session.commit()
 
 
-def load_words():
-    """Populate base data from badwords db"""
+# def load_words():
+#     """Populate base data from badwords db"""
 
-    for row in open("seeddata/badwords"):
-        row = row.rstrip()
-        word_id, word, language = row.split(",")
+#     for row in open("seeddata/badwords"):
+#         row = row.rstrip()
+#         word_id, word, language = row.split(",")
 
-        word = BadWord(word_id=word_id,
-                        word=word,
-                        language=language,
-                    category="profanity")
+#         word = BadWord(word_id=word_id,
+#                         word=word,
+#                         language=language,
+#                     category="profanity")
 
-        db.session.add(word)
-    db.session.commit()
+#         db.session.add(word)
+#     db.session.commit()
 
 
 
@@ -220,7 +220,7 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
 
-    load_images()
+    # load_images()
     load_items()
     # set_val_word_id()
     # load_abuse_scores()

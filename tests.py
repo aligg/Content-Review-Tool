@@ -154,6 +154,14 @@ class LoggedInServerTests(unittest.TestCase):
         self.assertIn("datasets", result.data)
         self.assertIn("labels", result.data)
 
+    def test_insights_chart(self):
+        """Does the insights chart load"""
+
+        result=self.client.get("/dashboard-sub-safety-scores.json")
+        self.assertIn("datasets", result.data)
+        self.assertIn("Safety Score", result.data)
+
+
 
 class LoggedOutServerTests(unittest.TestCase):
     """Tests for logged out CRT"""
