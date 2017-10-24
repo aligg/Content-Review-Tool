@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/aligg/Content-Review-Tool.svg?branch=master)](https://travis-ci.org/aligg/Content-Review-Tool)
+
 # Content Review Tool
 Content review tool (CRT) software useful for anyone wanting to review content in bulk or apply labels to large datasets. This implementation uses data from the Reddit API as fodder for review, but this tool is extensible to other use cases with a few edits to seed.py.
 
