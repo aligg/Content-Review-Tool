@@ -114,7 +114,7 @@ class LoggedInServerTests(unittest.TestCase):
     def test_reg_handler(self):
         """Does the registration handler work properly for new reviewers?"""
 
-        reg_data = {"reviewer id": 1000, "email" : "woof@gmail.com", "handle" :"woof", "password" : "woof", "is_manager" : False}
+        reg_data = {"email" : "woof@gmail.com", "handle" :"woof", "password" : "woof", "is_manager" : False}
         result = self.client.post("/reg-handler", data=reg_data, follow_redirects=True)
         self.assertNotIn("This reviewer is already registered", result.data)
         self.assertIn("New reviewer registered", result.data)
