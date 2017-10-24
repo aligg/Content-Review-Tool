@@ -153,6 +153,7 @@ def picker_handler_api_helper():
         submissions[submission.id] = submission
     
     comments = seed.grab_comments(reddit, submissions)
+    print comments
 
     return comments
 
@@ -165,7 +166,7 @@ def picker_handler():
     try:
         comments = picker_handler_api_helper()
         seed.load_items(comments)
-    
+        print comments
     except:
         subs = []
 

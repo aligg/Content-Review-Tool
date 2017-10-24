@@ -60,7 +60,7 @@ def grab_comments(reddit, s=None):
             comment = submission.comments[comment_num]
             comments[comment.link_id] = { "body" : comment.body,
                                                 "subreddit" : comment.subreddit.display_name,
-                                                "permalink" : comment.permalink(),
+                                                "permalink" : comment.permalink,
                                                 "controversiality" : comment.controversiality,
                                                 "submission" : submission.title,
                                                 "upvotes" : comment.ups,
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     load_images()
-    # load_items()
+    load_items()
     # set_val_word_id()
     # load_abuse_scores()
 
