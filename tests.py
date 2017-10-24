@@ -165,7 +165,9 @@ class LoggedOutServerTests(unittest.TestCase):
         server.app.config['SECRET_KEY'] = 'miau'
         self.client = server.app.test_client()
 
-        connect_to_db(server.app)
+        connect_to_db(server.app, "postgresql:///testdb")
+        db.create_all()
+        example_data()
 
     
     def test_homepage(self):
