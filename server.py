@@ -347,24 +347,6 @@ def pass_automation_rate_to_chart():
     return jsonify(data_dict)
 
 
-@app.route('/testing')
-def testing():
-    """route testing out classifier.py functionality & other things along the way"""
-
-    # classifier.organize_data()
-    # classifier.make_vectors()
-    # classifier.cross_validate()
-    # classifier.classify_a_comment()
-    # classifier.heuristic_maker(1)
-    # classifier.load_abuse_scores()
-    # dashboard.heuristic_classifier(9)
-    # dashboard.classifier_performance()
-    # dashboard.wrongs_deep_dive()
-    dashboard.rules_returning_errors()
-    return "123"
-
-
-
 if __name__ == "__main__":
     app.debug = True
     app.jinja_env.auto_reload = app.debug
