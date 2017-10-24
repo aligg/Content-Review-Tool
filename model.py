@@ -126,8 +126,8 @@ def example_data():
     Reviewer.query.delete()
 
 
-    reviewer = Reviewer(reviewer_id=1, email="ali.glenesk@gmail.com", handle="alig", password="$pbkdf2-sha256$29000$XgthbE1pTcmZc47xXksJgQ$Xi0f.1R2nyfRMzRpEp3ZcEx3gb1q88PCfIXuh3yLvtY", is_manager=True)
-    rev2 = Reviewer(reviewer_id=2, email="miau@gmail.com", handle="miau", password="$pbkdf2-sha256$29000$LUXI.d/bm1NKKeU8Z0xJiQ$FQFZCxwG.F6CfhIMSIA9uT869LsTzyNQ8YVJ/4kTKnc", is_manager=False)
+    reviewer = Reviewer(reviewer_id=4, email="ali.glenesk@gmail.com", handle="alig", password="$pbkdf2-sha256$29000$XgthbE1pTcmZc47xXksJgQ$Xi0f.1R2nyfRMzRpEp3ZcEx3gb1q88PCfIXuh3yLvtY", is_manager=True)
+    rev2 = Reviewer(reviewer_id=5, email="miau@gmail.com", handle="miau", password="$pbkdf2-sha256$29000$LUXI.d/bm1NKKeU8Z0xJiQ$FQFZCxwG.F6CfhIMSIA9uT869LsTzyNQ8YVJ/4kTKnc", is_manager=False)
 
     item = Item(item_id=1, link_id="123", body="I LOVE TO POST ON REDDIT", 
                 author="redditor", submission="subtest", subreddit="news",
@@ -154,12 +154,12 @@ def example_data():
                 permalink="/r/pics/comments/72xep5/jabba_the_trump/",
                 controversiality=None, upvotes=71510, downvotes=0, parent="image")
 
-    action = Action(action_id=1, item_id=1, reviewer_id=1, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
-    action2 = Action(action_id=2, item_id=2, reviewer_id=1, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
-    action3 = Action(action_id=3, item_id=3, reviewer_id=2, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
-    action4 = Action(action_id=4, item_id=4, reviewer_id=1, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
-    action5 = Action(action_id=5, item_id=5, reviewer_id=2, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
-    action6 = Action(action_id=6, item_id=1, reviewer_id=2, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
+    action = Action(action_id=1, item_id=1, reviewer_id=4, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
+    action2 = Action(action_id=2, item_id=2, reviewer_id=4, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
+    action3 = Action(action_id=3, item_id=3, reviewer_id=5, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
+    action4 = Action(action_id=4, item_id=4, reviewer_id=4, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
+    action5 = Action(action_id=5, item_id=5, reviewer_id=5, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
+    action6 = Action(action_id=6, item_id=1, reviewer_id=5, time_created=datetime.datetime.utcnow(), label_applied="brand_safe", notes="fine")
     
     db.session.add_all([reviewer, rev2, item, item2, item3, item4, item5, action, image, action2, action3, action4, action5, action6])
     db.session.commit()
