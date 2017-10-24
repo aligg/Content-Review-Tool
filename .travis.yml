@@ -13,3 +13,8 @@ before_script:
 
 script:
   - python tests.py
+  - coverage run --source=. --omit="env/*" tests.py
+
+after_success:
+  coveralls
+
