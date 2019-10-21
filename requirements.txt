@@ -52,4 +52,4 @@ travis==0.0.3
 update-checker==0.16
 urllib3==1.22
 wcwidth==0.1.7
-Werkzeug==0.12.2
+Werkzeug==0.15.3
