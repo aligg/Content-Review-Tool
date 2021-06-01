@@ -50,6 +50,6 @@ SQLAlchemy==1.1.14
 traitlets==4.3.2
 travis==0.0.3
 update-checker==0.16
-urllib3==1.22
+urllib3==1.26.5
 wcwidth==0.1.7
 Werkzeug==0.12.2
